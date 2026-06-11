@@ -38,7 +38,32 @@ const defaultSchema = {
   isPartOf: { '@id': `${SITE.url}/#website` },
   inLanguage: 'es-GT',
 }
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${SITE.url}/#organization`,
+  name: SITE.name,
+  url: SITE.url,
+  logo: `${SITE.url}/images/logo.webp`,
+  email: SITE.email,
+  telephone: SITE.phone,
+  sameAs: [SITE.linkedin].filter(Boolean),
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  name: SITE.name,
+  url: SITE.url,
+  inLanguage: 'es-GT',
+  publisher: { '@id': `${SITE.url}/#organization` },
+}
+
 const schemas = Array.isArray(schema) ? schema : [schema || defaultSchema]
+// Ensure Organization and WebSite are the first schemas (avoid duplicates)
+const schemasCombined = [organizationSchema, websiteSchema, ...schemas]
+
 ---
 
 <!doctype html>
@@ -72,7 +97,7 @@ const schemas = Array.isArray(schema) ? schema : [schema || defaultSchema]
     <meta name="twitter:image" content={image} />
     <meta name="twitter:image:alt" content={imageAlt} />
 
-    {schemas.map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
+    {schemasCombined.map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
 
     {
       gaId && (
