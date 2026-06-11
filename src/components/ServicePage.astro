@@ -55,14 +55,14 @@ const schema = [
 >
   <header class="service-hero">
     <div class="container">
-      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Servicios', href: '/#servicios' }, { label: service.shortTitle }]} />
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Servicios', href: '/servicios/' }, { label: service.shortTitle }]} />
       <div class="split">
         <div>
           <span class="eyebrow">Servicios tecnológicos en Guatemala</span>
           <h1>{service.title}</h1>
           <p class="lead">{service.description}</p>
           <div class="button-row">
-            <a class="button button-primary" href="/contacto/">Solicitar cotización</a>
+            <a class="button button-primary" href={`/contacto/?servicio=${encodeURIComponent(service.shortTitle)}`} data-cta="quote" data-service={service.shortTitle}>Solicitar cotización</a>
             <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>
           </div>
         </div>

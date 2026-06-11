@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import ResponsiveImage from '../../components/ResponsiveImage.astro'
+
+const cases = await getCollection('cases', ({ data }) => !data.draft)
+const description = 'Casos y experiencias de WavDev en CRM, plataformas inmobiliarias y sistemas de recursos humanos.'
+---
+
+<BaseLayout title="Casos de éxito de software empresarial | WavDev" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Casos de éxito' }]} />
+      <span class="eyebrow">Experiencia aplicada</span>
+      <h1>Casos de software, automatización y plataformas empresariales</h1>
+      <p class="lead">Documentamos el problema, la solución y la evidencia disponible. Las métricas y testimonios se publican únicamente cuando existe autorización verificable.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container grid grid-3">
+      {cases.map((entry) => (
+        <article class="card resource-card">
+          <ResponsiveImage src={entry.data.featuredImage} alt={`Vista del proyecto ${entry.data.client}`} sizes="(max-width: 860px) 100vw, 33vw" />
+          <div class="card-body">
+            <span class="eyebrow">{entry.data.industry}</span>
+            <h2 class="card-title"><a href={`/casos-de-exito/${entry.data.slug}/`}>{entry.data.title}</a></h2>
+            <p class="muted">{entry.data.description}</p>
+            <a class="text-link" href={`/casos-de-exito/${entry.data.slug}/`}>Ver caso →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

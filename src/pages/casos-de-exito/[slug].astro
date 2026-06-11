@@ -1,0 +1,85 @@
+---
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import CTA from '../../components/CTA.astro'
+import ResponsiveImage from '../../components/ResponsiveImage.astro'
+import { SITE } from '../../data/site'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+  const entries = await getCollection('cases', ({ data }) => !data.draft)
+  return entries.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry } }))
+}
+
+const { entry } = Astro.props
+const { Content, headings } = await render(entry)
+const canonical = `${SITE.url}/casos-de-exito/${entry.data.slug}/`
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: entry.data.title,
+    description: entry.data.description,
+    image: `${SITE.url}${entry.data.featuredImage}`,
+    datePublished: entry.data.publishDate.toISOString(),
+    dateModified: entry.data.updatedDate.toISOString(),
+    author: { '@type': 'Organization', name: entry.data.author, url: SITE.url },
+    publisher: { '@id': `${SITE.url}/#organization` },
+    about: [entry.data.service, entry.data.industry],
+    mainEntityOfPage: canonical,
+    inLanguage: 'es-GT',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Casos de éxito', item: `${SITE.url}/casos-de-exito/` },
+      { '@type': 'ListItem', position: 3, name: entry.data.title, item: canonical },
+    ],
+  },
+]
+---
+
+<BaseLayout title={`${entry.data.title} | WavDev`} description={entry.data.description} canonical={canonical} image={`${SITE.url}${entry.data.featuredImage}`} type="article" schema={schema}>
+  <article>
+    <header class="service-hero">
+      <div class="container">
+        <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Casos de éxito', href: '/casos-de-exito/' }, { label: entry.data.client }]} />
+        <span class="eyebrow">{entry.data.industry}</span>
+        <h1>{entry.data.title}</h1>
+        <p class="lead">{entry.data.description}</p>
+        <div class="content-meta-row">
+          <span>Proyecto: {entry.data.client}</span>
+          <span>Servicio: {entry.data.service}</span>
+          <span>Evidencia pública: {entry.data.evidenceStatus === 'verified' ? 'verificada' : 'limitada al alcance demostrable'}</span>
+        </div>
+      </div>
+    </header>
+    <section class="section">
+      <div class="container article-layout">
+        <div>
+          <ResponsiveImage src={entry.data.featuredImage} alt={`Interfaz del proyecto ${entry.data.client}`} loading="eager" fetchpriority="high" sizes="(max-width: 900px) 100vw, 760px" />
+          <div class="prose article-prose">
+            <Content />
+          </div>
+          <section class="prose">
+            <h2>Servicios relacionados</h2>
+            <div class="button-row">
+              {entry.data.relatedLinks.map((href) => <a class="button button-secondary" href={href}>Explorar solución</a>)}
+            </div>
+          </section>
+        </div>
+        <aside class="card card-body article-toc">
+          <span class="eyebrow">Contenido del caso</span>
+          <nav>
+            {headings.filter((heading) => heading.depth === 2).map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}
+          </nav>
+        </aside>
+      </div>
+    </section>
+  </article>
+  <CTA service={entry.data.service} />
+</BaseLayout>

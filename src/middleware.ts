@@ -2,7 +2,9 @@ import { defineMiddleware } from 'astro:middleware'
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const url = new URL(context.request.url)
-  const host = context.request.headers.get('x-forwarded-host') || context.request.headers.get('host') || url.host
+  const host = context.isPrerendered
+    ? url.host
+    : context.request.headers.get('x-forwarded-host') || context.request.headers.get('host') || url.host
   const canonicalHost = host === 'www.wavdev.lat' ? 'wavdev.lat' : host
   const needsSlash = !url.pathname.endsWith('/') && !url.pathname.includes('.') && !url.pathname.startsWith('/api/')
 

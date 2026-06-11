@@ -14,6 +14,14 @@ const allowedServices = new Set([
   'Sistemas a la medida',
   'CRM para empresas',
   'Automatización de procesos',
+  'Apps móviles',
+  'WhatsApp y CRM',
+  'Software para PYMES',
+  'Integraciones y APIs',
+  'CRM para ventas',
+  'Software inmobiliario',
+  'Sistemas de RR. HH.',
+  'Automatización de Excel',
   'Otro proyecto',
 ])
 

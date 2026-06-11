@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import { SERVICES } from '../../data/site'
+import { COMMERCIAL_PAGES } from '../../data/commercial'
+
+const additional = COMMERCIAL_PAGES.filter((page) => page.section === 'servicios')
+const description = 'Servicios de desarrollo web, software a la medida, CRM, automatización, apps e integraciones para empresas de Guatemala.'
+---
+
+<BaseLayout title="Servicios de desarrollo de software en Guatemala | WavDev" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Servicios' }]} />
+      <span class="eyebrow">Catálogo de servicios</span>
+      <h1>Servicios tecnológicos para empresas de Guatemala</h1>
+      <p class="lead">Explora soluciones para captar oportunidades, centralizar información, automatizar tareas y conectar las herramientas de tu empresa.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container grid grid-3">
+      {SERVICES.map((service) => (
+        <article class="card card-body service-card">
+          <span class="eyebrow">Servicio principal</span>
+          <h2 class="card-title">{service.shortTitle}</h2>
+          <p class="muted">{service.description}</p>
+          <a href={`/servicios/${service.slug}/`}>Conocer servicio →</a>
+        </article>
+      ))}
+      {additional.map((page) => (
+        <article class="card card-body service-card">
+          <span class="eyebrow">Servicio especializado</span>
+          <h2 class="card-title">{page.shortTitle}</h2>
+          <p class="muted">{page.description}</p>
+          <a href={`/servicios/${page.slug}/`}>Conocer servicio →</a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

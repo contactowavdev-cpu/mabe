@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import { COMMERCIAL_PAGES } from '../../data/commercial'
+
+const solutions = COMMERCIAL_PAGES.filter((page) => page.section === 'soluciones')
+const description = 'Soluciones de CRM, software inmobiliario, recursos humanos y automatización de Excel para empresas en Guatemala.'
+---
+
+<BaseLayout title="Soluciones de software por proceso e industria | WavDev" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Soluciones' }]} />
+      <span class="eyebrow">Soluciones por necesidad</span>
+      <h1>Software diseñado alrededor de procesos empresariales</h1>
+      <p class="lead">Partimos del problema operativo y conectamos servicios, integraciones y experiencia para construir una solución con alcance claro.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container grid grid-2">
+      {solutions.map((page) => (
+        <article class="card card-body service-card">
+          <span class="eyebrow">{page.eyebrow}</span>
+          <h2 class="card-title">{page.shortTitle}</h2>
+          <p class="muted">{page.description}</p>
+          <a href={`/soluciones/${page.slug}/`}>Explorar solución →</a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

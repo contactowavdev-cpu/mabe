@@ -35,6 +35,7 @@ export default function ContactForm({ defaultService = '' }) {
       setStatus({ state: 'success', message: 'Recibimos tu mensaje. Te contactaremos pronto.' })
       setForm({ ...initialForm, service: defaultService })
       window.trackWavDevEvent?.('generate_lead', { method: 'contact_form', service: form.service })
+      window.trackWavDevEvent?.('form_submit', { form_name: 'contact', service: form.service })
     } catch (error) {
       setStatus({
         state: 'error',
@@ -66,6 +67,14 @@ export default function ContactForm({ defaultService = '' }) {
             <option>Sistemas a la medida</option>
             <option>CRM para empresas</option>
             <option>Automatización de procesos</option>
+            <option>Apps móviles</option>
+            <option>WhatsApp y CRM</option>
+            <option>Software para PYMES</option>
+            <option>Integraciones y APIs</option>
+            <option>CRM para ventas</option>
+            <option>Software inmobiliario</option>
+            <option>Sistemas de RR. HH.</option>
+            <option>Automatización de Excel</option>
             <option>Otro proyecto</option>
           </select>
         </div>

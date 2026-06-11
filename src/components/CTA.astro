@@ -20,8 +20,8 @@ const whatsapp = `${SITE.whatsapp}?text=${encodeURIComponent(`Hola WavDev, quier
     <h2>{title}</h2>
     <p class="lead">{text}</p>
     <div class="button-row">
-      <a class="button button-primary" href="/contacto/">Solicitar cotización</a>
-      <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+      <a class="button button-primary" href={`/contacto/?servicio=${encodeURIComponent(service)}`} data-cta="quote" data-service={service}>Solicitar cotización</a>
+      <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer" data-service={service}>Hablar por WhatsApp</a>
     </div>
   </div>
 </section>

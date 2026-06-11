@@ -27,6 +27,8 @@ const {
 } = Astro.props
 
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION
+const bingVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION
 const defaultSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
@@ -50,6 +52,8 @@ const schemas = Array.isArray(schema) ? schema : [schema || defaultSchema]
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large'} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/webp" href="/images/logo.webp" />
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+    {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
 
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:type" content={type} />
@@ -94,9 +98,16 @@ const schemas = Array.isArray(schema) ? schema : [schema || defaultSchema]
         var link = event.target.closest('a');
         if (!link) return;
         var href = link.getAttribute('href') || '';
-        if (href.includes('wa.me')) window.trackWavDevEvent('whatsapp_click', { link_url: href });
-        if (href.startsWith('tel:')) window.trackWavDevEvent('phone_click', { link_url: href });
-        if (href.startsWith('mailto:')) window.trackWavDevEvent('email_click', { link_url: href });
+        var parameters = {
+          link_url: href,
+          link_text: (link.textContent || '').trim(),
+          page_path: window.location.pathname,
+          service: link.dataset.service || undefined
+        };
+        if (href.includes('wa.me')) window.trackWavDevEvent('whatsapp_click', parameters);
+        if (href.startsWith('tel:')) window.trackWavDevEvent('phone_click', parameters);
+        if (href.startsWith('mailto:')) window.trackWavDevEvent('email_click', parameters);
+        if (link.dataset.cta === 'quote') window.trackWavDevEvent('quote_click', parameters);
       });
     </script>
   </head>

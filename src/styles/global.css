@@ -602,10 +602,148 @@ p {
   font-size: 0.86rem;
 }
 
+.footer-grid-wide {
+  grid-template-columns: 1.25fr repeat(3, minmax(0, 0.75fr));
+}
+
+.card-title {
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+}
+
+.resource-card,
+.project-row {
+  overflow: hidden;
+}
+
+.resource-card picture img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.text-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--cyan-bright);
+  font-weight: 800;
+}
+
+.content-meta,
+.content-meta-row {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.content-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.4rem;
+  margin-top: 2rem;
+}
+
+.article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 800px) minmax(240px, 0.35fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.article-layout > div > picture img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.article-prose {
+  margin-top: 3rem;
+}
+
+.article-prose h2,
+.article-prose h3 {
+  scroll-margin-top: 100px;
+}
+
+.article-toc {
+  position: sticky;
+  top: 100px;
+}
+
+.article-toc nav {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+}
+
+.article-toc a {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.article-toc a:hover {
+  color: var(--cyan-bright);
+}
+
+.sources {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.aside-title {
+  font-size: 2rem;
+}
+
+.aside-subtitle {
+  margin-top: 2rem;
+}
+
+.related-section {
+  border-block: 1px solid var(--line);
+}
+
+.related-link {
+  min-height: 150px;
+  display: grid;
+  align-content: space-between;
+  gap: 1rem;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.related-link:hover {
+  transform: translateY(-3px);
+  border-color: rgba(13, 234, 255, 0.4);
+}
+
+.related-link span {
+  color: var(--cyan-bright);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.related-link strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  text-transform: capitalize;
+}
+
+.project-row picture img {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  object-fit: cover;
+}
+
 @media (max-width: 860px) {
   .grid-3,
   .split,
-  .footer-grid {
+  .footer-grid,
+  .footer-grid-wide,
+  .article-layout {
     grid-template-columns: 1fr;
   }
 
@@ -644,6 +782,11 @@ p {
 
   .aside-card {
     position: static;
+  }
+
+  .article-toc {
+    position: static;
+    order: -1;
   }
 }
 

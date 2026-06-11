@@ -3,10 +3,10 @@ import { SITE } from '../data/site'
 
 const path = Astro.url.pathname
 const links = [
-  ['/servicios/desarrollo-web-guatemala/', 'Desarrollo web'],
-  ['/servicios/sistemas-a-la-medida/', 'Sistemas'],
-  ['/servicios/crm-para-empresas/', 'CRM'],
-  ['/proyectos/', 'Proyectos'],
+  ['/servicios/', 'Servicios'],
+  ['/soluciones/', 'Soluciones'],
+  ['/casos-de-exito/', 'Casos'],
+  ['/recursos/', 'Recursos'],
   ['/nosotros/', 'Nosotros'],
 ]
 const whatsapp = `${SITE.whatsapp}?text=${encodeURIComponent('Hola WavDev, quiero cotizar un proyecto de software.')}`
@@ -22,8 +22,8 @@ const whatsapp = `${SITE.whatsapp}?text=${encodeURIComponent('Hola WavDev, quier
       <span aria-hidden="true">☰</span>
     </button>
     <div class="nav-links" id="primary-menu" data-open="false">
-      {links.map(([href, label]) => <a href={href} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
-      <a class="button button-primary" href={whatsapp} target="_blank" rel="noopener noreferrer">Cotizar</a>
+      {links.map(([href, label]) => <a href={href} aria-current={path.startsWith(href) ? 'page' : undefined}>{label}</a>)}
+      <a class="button button-primary" href={whatsapp} target="_blank" rel="noopener noreferrer" data-cta="quote">Cotizar</a>
     </div>
   </nav>
 </header>
