@@ -1,0 +1,27 @@
+---
+import { SITE } from '../data/site'
+
+interface Props {
+  title?: string
+  text?: string
+  service?: string
+}
+const {
+  title = 'Convirtamos una necesidad operativa en una solución útil',
+  text = 'Cuéntanos qué quieres mejorar. Te ayudaremos a definir el alcance y el siguiente paso sin compromisos.',
+  service = 'proyecto de software',
+} = Astro.props
+const whatsapp = `${SITE.whatsapp}?text=${encodeURIComponent(`Hola WavDev, quiero conversar sobre ${service}.`)}`
+---
+
+<section class="section">
+  <div class="container card cta-band">
+    <span class="eyebrow">Siguiente paso</span>
+    <h2>{title}</h2>
+    <p class="lead">{text}</p>
+    <div class="button-row">
+      <a class="button button-primary" href="/contacto/">Solicitar cotización</a>
+      <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">Hablar por WhatsApp</a>
+    </div>
+  </div>
+</section>

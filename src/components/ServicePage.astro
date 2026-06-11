@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Breadcrumbs from './Breadcrumbs.astro'
+import CTA from './CTA.astro'
+import ResponsiveImage from './ResponsiveImage.astro'
+import { SERVICES, SITE, type Service } from '../data/site'
+
+interface Props {
+  service: Service
+}
+const { service } = Astro.props
+const canonical = `${SITE.url}/servicios/${service.slug}/`
+const whatsapp = `${SITE.whatsapp}?text=${encodeURIComponent(`Hola WavDev, quiero información sobre ${service.shortTitle}.`)}`
+const related = SERVICES.filter((item) => item.slug !== service.slug).slice(0, 3)
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${canonical}#service`,
+    name: service.title,
+    description: service.description,
+    url: canonical,
+    areaServed: { '@type': 'Country', name: 'Guatemala' },
+    provider: { '@id': `${SITE.url}/#organization` },
+    serviceType: service.shortTitle,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Servicios', item: `${SITE.url}/#servicios` },
+      { '@type': 'ListItem', position: 3, name: service.shortTitle, item: canonical },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: service.faqs.map(([question, answer]) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  },
+]
+---
+
+<BaseLayout
+  title={`${service.title} | WavDev`}
+  description={service.description}
+  canonical={canonical}
+  image={`${SITE.url}${service.image}`}
+  imageAlt={service.imageAlt}
+  schema={schema}
+>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Servicios', href: '/#servicios' }, { label: service.shortTitle }]} />
+      <div class="split">
+        <div>
+          <span class="eyebrow">Servicios tecnológicos en Guatemala</span>
+          <h1>{service.title}</h1>
+          <p class="lead">{service.description}</p>
+          <div class="button-row">
+            <a class="button button-primary" href="/contacto/">Solicitar cotización</a>
+            <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>
+          </div>
+        </div>
+        <figure class="card" style="margin:0; overflow:hidden;">
+          <ResponsiveImage
+            src={service.image}
+            loading="eager"
+            fetchpriority="high"
+            alt={service.imageAlt}
+            sizes="(max-width: 860px) 100vw, 38vw"
+          />
+        </figure>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container split">
+      <article class="prose">
+        {service.sections.map((section) => (
+          <section>
+            <h2>{section.heading}</h2>
+            {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          </section>
+        ))}
+
+        <section>
+          <h2>Cómo desarrollamos el proyecto</h2>
+          {service.process.map(([title, description], index) => (
+            <div>
+              <h3>{String(index + 1).padStart(2, '0')}. {title}</h3>
+              <p>{description}</p>
+            </div>
+          ))}
+        </section>
+
+        <section class="faq">
+          <h2>Preguntas frecuentes</h2>
+          {service.faqs.map(([question, answer]) => (
+            <details>
+              <summary>{question}<span aria-hidden="true">+</span></summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </section>
+      </article>
+
+      <aside class="card card-body aside-card" aria-label={`Resumen de ${service.shortTitle}`}>
+        <span class="eyebrow">Beneficios</span>
+        <h2 style="font-size:2rem;">Una solución enfocada en resultados</h2>
+        <ul class="check-list">
+          {service.benefits.map((item) => <li>{item}</li>)}
+        </ul>
+        <h3 style="margin-top:2rem;">Casos de uso</h3>
+        <ul class="check-list">
+          {service.useCases.map((item) => <li>{item}</li>)}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" style="border-block:1px solid var(--line);">
+    <div class="container">
+      <span class="eyebrow">Servicios relacionados</span>
+      <h2>Una estrategia tecnológica conectada</h2>
+      <div class="grid grid-3">
+        {related.map((item, index) => (
+          <article class="card card-body service-card">
+            <span class="number">0{index + 1}</span>
+            <h3>{item.shortTitle}</h3>
+            <p class="muted">{item.description}</p>
+            <a href={`/servicios/${item.slug}/`}>Conocer el servicio →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTA service={service.shortTitle} />
+</BaseLayout>

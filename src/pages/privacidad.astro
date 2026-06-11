@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import { SITE } from '../data/site'
+const description = 'Aviso de privacidad de WavDev para solicitudes comerciales y uso del sitio wavdev.lat.'
+---
+<BaseLayout title="Aviso de privacidad | WavDev" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Privacidad' }]} />
+      <span class="eyebrow">Legal</span>
+      <h1>Aviso de privacidad</h1>
+      <p class="lead">Explicamos qué información recibimos, para qué la usamos y cómo puedes solicitar su actualización o eliminación.</p>
+    </div>
+  </header>
+  <article class="section container prose">
+    <p>Última actualización: 10 de junio de 2026.</p>
+    <h2>Información que recopilamos</h2>
+    <p>Cuando utilizas el formulario podemos recibir nombre, correo electrónico, teléfono opcional, servicio de interés y mensaje. También podemos recibir información técnica básica necesaria para seguridad, prevención de abuso y medición del funcionamiento del sitio.</p>
+    <h2>Finalidades</h2>
+    <p>Usamos la información para responder solicitudes, preparar cotizaciones, dar seguimiento a conversaciones comerciales, proteger el formulario y mejorar el sitio. No vendemos información personal.</p>
+    <h2>Proveedores</h2>
+    <p>Podemos utilizar Resend para entregar correos y Google Analytics cuando se configure un identificador de medición. Estos proveedores procesan información según sus propios términos y medidas de seguridad.</p>
+    <h2>Conservación y seguridad</h2>
+    <p>Conservamos la información durante el tiempo razonablemente necesario para responder y mantener el historial comercial. Aplicamos controles técnicos y organizativos, aunque ningún sistema conectado a internet puede garantizar seguridad absoluta.</p>
+    <h2>Tus solicitudes</h2>
+    <p>Puedes solicitar acceso, corrección o eliminación escribiendo a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Es posible que necesitemos verificar tu identidad antes de atender la solicitud.</p>
+    <h2>Cookies y analítica</h2>
+    <p>El sitio puede usar almacenamiento técnico y analítica para comprender rendimiento y conversiones. Cuando se habiliten herramientas que requieran consentimiento adicional, se deberá implementar el mecanismo correspondiente antes de activarlas.</p>
+    <h2>Cambios</h2>
+    <p>Podemos actualizar este aviso para reflejar cambios en servicios, proveedores o requisitos aplicables. La fecha de actualización se mostrará al inicio.</p>
+  </article>
+</BaseLayout>

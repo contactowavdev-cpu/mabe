@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import ContactForm from '../components/ContactForm.jsx'
+import { SITE } from '../data/site'
+const description = 'Contacta a WavDev para cotizar desarrollo web, sistemas a la medida, CRM o automatización de procesos en Guatemala.'
+---
+<BaseLayout title="Contacto y cotizaciones | WavDev Guatemala" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Contacto' }]} />
+      <span class="eyebrow">Hablemos</span>
+      <h1>Cuéntanos qué necesitas resolver</h1>
+      <p class="lead">Describe el proceso, problema u oportunidad. Revisaremos la información y te propondremos el siguiente paso adecuado.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container split">
+      <div class="card card-body">
+        <ContactForm client:load />
+      </div>
+      <aside class="card card-body aside-card">
+        <span class="eyebrow">Contacto directo</span>
+        <h2 style="font-size:2rem;">También puedes escribirnos</h2>
+        <div class="footer-links">
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+          <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay}</a>
+          <a href={`${SITE.whatsapp}?text=${encodeURIComponent('Hola WavDev, quiero conversar sobre un proyecto.')}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </div>
+        <p class="muted" style="margin-top:2rem;">Áreas de servicio: {SITE.serviceAreas.join(', ')} y colaboración remota en Guatemala.</p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,46 @@
+---
+import { SITE } from '../data/site'
+
+const path = Astro.url.pathname
+const links = [
+  ['/servicios/desarrollo-web-guatemala/', 'Desarrollo web'],
+  ['/servicios/sistemas-a-la-medida/', 'Sistemas'],
+  ['/servicios/crm-para-empresas/', 'CRM'],
+  ['/proyectos/', 'Proyectos'],
+  ['/nosotros/', 'Nosotros'],
+]
+const whatsapp = `${SITE.whatsapp}?text=${encodeURIComponent('Hola WavDev, quiero cotizar un proyecto de software.')}`
+---
+
+<header class="site-header">
+  <nav class="nav container" aria-label="Navegación principal">
+    <a class="brand" href="/" aria-label="WavDev, inicio">
+      <img src="/images/wavdev.webp" width="38" height="38" alt="" />
+      <span>WavDev</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="primary-menu">
+      <span aria-hidden="true">☰</span>
+    </button>
+    <div class="nav-links" id="primary-menu" data-open="false">
+      {links.map(([href, label]) => <a href={href} aria-current={path === href ? 'page' : undefined}>{label}</a>)}
+      <a class="button button-primary" href={whatsapp} target="_blank" rel="noopener noreferrer">Cotizar</a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle')
+  const menu = document.querySelector<HTMLElement>('#primary-menu')
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true'
+    toggle.setAttribute('aria-expanded', String(!open))
+    toggle.setAttribute('aria-label', open ? 'Abrir menú' : 'Cerrar menú')
+    if (menu) menu.dataset.open = String(!open)
+  })
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      toggle?.setAttribute('aria-expanded', 'false')
+      if (menu) menu.dataset.open = 'false'
+    })
+  })
+</script>

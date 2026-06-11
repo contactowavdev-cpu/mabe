@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+<BaseLayout title="Página no encontrada | WavDev" description="La página solicitada no existe." noindex={true}>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Error 404</span>
+      <h1>Esta página no existe o cambió de dirección</h1>
+      <p class="lead">Puedes regresar al inicio, revisar nuestros servicios o contarnos qué estás buscando.</p>
+      <div class="button-row">
+        <a class="button button-primary" href="/">Volver al inicio</a>
+        <a class="button button-secondary" href="/contacto/">Contactar</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

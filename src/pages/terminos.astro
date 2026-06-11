@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import { SITE } from '../data/site'
+const description = 'Términos generales de uso del sitio y contratación de servicios tecnológicos de WavDev.'
+---
+<BaseLayout title="Términos de servicio | WavDev" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Términos' }]} />
+      <span class="eyebrow">Legal</span>
+      <h1>Términos de servicio</h1>
+      <p class="lead">Condiciones generales para el uso del sitio y la conversación inicial sobre servicios de WavDev.</p>
+    </div>
+  </header>
+  <article class="section container prose">
+    <p>Última actualización: 10 de junio de 2026.</p>
+    <h2>Información del sitio</h2>
+    <p>El contenido de wavdev.lat tiene carácter informativo. Una descripción de servicio, ejemplo o precio orientativo no constituye una oferta contractual definitiva.</p>
+    <h2>Cotizaciones y contratos</h2>
+    <p>Cada proyecto se define mediante una propuesta o contrato que establece alcance, entregables, calendario, responsabilidades, costos y condiciones de pago. Ese documento prevalece sobre la información general del sitio.</p>
+    <h2>Propiedad intelectual</h2>
+    <p>La titularidad del producto final, código, diseños, licencias y componentes de terceros se determinará en la propuesta correspondiente. La transferencia acordada estará sujeta al cumplimiento de las obligaciones de pago.</p>
+    <h2>Servicios externos</h2>
+    <p>Algunas soluciones dependen de hosting, APIs, plataformas, pasarelas o proveedores externos. Su disponibilidad, políticas y precios pueden cambiar fuera del control de WavDev.</p>
+    <h2>Portafolio y afirmaciones</h2>
+    <p>Los proyectos, testimonios y resultados solo deberán publicarse con autorización y respaldo suficiente. Las imágenes demostrativas no deben interpretarse como una relación comercial si no se identifica expresamente al cliente.</p>
+    <h2>Limitaciones</h2>
+    <p>WavDev procura mantener información correcta y el sitio disponible, pero no garantiza funcionamiento ininterrumpido. Las responsabilidades específicas de un proyecto se acordarán por escrito.</p>
+    <h2>Contacto</h2>
+    <p>Para preguntas sobre estos términos escribe a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+  </article>
+</BaseLayout>

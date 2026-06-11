@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import CTA from '../components/CTA.astro'
+const description = 'Conoce el enfoque de WavDev para diseñar y desarrollar software útil para empresas de Guatemala.'
+---
+<BaseLayout title="Acerca de WavDev | Empresa de tecnología en Guatemala" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Nosotros' }]} />
+      <span class="eyebrow">Nosotros</span>
+      <h1>Un socio tecnológico que empieza por escuchar</h1>
+      <p class="lead">WavDev desarrolla soluciones digitales para empresas que necesitan claridad, control y una base tecnológica capaz de crecer.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container split">
+      <article class="prose">
+        <h2>Nuestro enfoque</h2>
+        <p>No comenzamos un proyecto eligiendo una tecnología. Primero comprendemos el problema, las personas involucradas, la información disponible y el resultado que la empresa espera conseguir.</p>
+        <p>Después proponemos una primera entrega limitada, útil y verificable. Esta forma de trabajo reduce riesgo, permite aprender con usuarios reales y evita invertir meses en funciones que nadie necesita.</p>
+        <h2>Diseño, ingeniería y negocio</h2>
+        <p>Una solución empresarial debe ser comprensible, estable y mantenible. Combinamos experiencia de usuario, desarrollo, integraciones y medición para que el producto funcione más allá de una demostración.</p>
+        <p>También somos transparentes sobre restricciones, dependencias externas y decisiones que afectan costo o calendario. Preferimos una conversación incómoda a tiempo antes que una sorpresa cuando el proyecto ya está avanzado.</p>
+      </article>
+      <aside class="card card-body aside-card">
+        <span class="eyebrow">Principios</span>
+        <h2 style="font-size:2rem;">Cómo tomamos decisiones</h2>
+        <ul class="check-list">
+          <li>Validar antes de ampliar.</li>
+          <li>Medir antes de afirmar.</li>
+          <li>Documentar lo que mantiene la operación.</li>
+          <li>Usar tecnología adecuada, no tecnología de moda.</li>
+          <li>Proteger datos y accesos desde el diseño.</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+  <CTA />
+</BaseLayout>

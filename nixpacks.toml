@@ -1,3 +1,6 @@
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+
 [phases.install]
 cmds = ["npm install"]
 
@@ -5,4 +8,4 @@ cmds = ["npm install"]
 cmds = ["npm run build"]
 
 [start]
-cmd = "npx serve@latest dist -s -l $PORT"
+cmd = "node dist/server/entry.mjs"

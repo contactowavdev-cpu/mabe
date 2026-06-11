@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CTA from '../components/CTA.astro'
+import ResponsiveImage from '../components/ResponsiveImage.astro'
+import { PROJECTS, SERVICES, SITE } from '../data/site'
+
+const title = 'Desarrollo de Software y Sistemas a la Medida en Guatemala | WavDev'
+const description =
+  'Desarrollamos páginas web, sistemas a la medida, CRM y automatizaciones para empresas y PYMES en Guatemala. Solicita una cotización.'
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': ['Organization', 'LocalBusiness'],
+    '@id': `${SITE.url}/#organization`,
+    name: SITE.name,
+    url: SITE.url,
+    logo: `${SITE.url}/images/logo.webp`,
+    image: `${SITE.url}/images/wavdev-social.png`,
+    description,
+    email: SITE.email,
+    telephone: SITE.phone,
+    priceRange: '$$',
+    areaServed: SITE.serviceAreas.map((name) => ({ '@type': 'City', name })),
+    address: { '@type': 'PostalAddress', addressCountry: 'GT' },
+    sameAs: [SITE.linkedin],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      email: SITE.email,
+      telephone: SITE.phone,
+      availableLanguage: ['es'],
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE.url}/#website`,
+    name: SITE.name,
+    url: SITE.url,
+    inLanguage: 'es-GT',
+    publisher: { '@id': `${SITE.url}/#organization` },
+  },
+]
+---
+
+<BaseLayout title={title} description={description} canonical={`${SITE.url}/`} schema={schema}>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-orbit" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <span class="eyebrow">Empresa de tecnología en Guatemala</span>
+        <h1>Desarrollo de software y soluciones tecnológicas en Guatemala</h1>
+        <p class="lead">
+          Creamos páginas web, sistemas empresariales, CRM y automatizaciones que ayudan a convertir procesos manuales en operaciones más claras, rápidas y medibles.
+        </p>
+        <div class="button-row">
+          <a class="button button-primary" href="/contacto/">Cuéntanos tu proyecto</a>
+          <a class="button button-secondary" href="#servicios">Explorar servicios</a>
+        </div>
+        <div class="stat-strip" aria-label="Enfoque de WavDev">
+          <div class="stat"><strong>01</strong><span>Diagnóstico antes de desarrollar</span></div>
+          <div class="stat"><strong>02</strong><span>Entregas incrementales y verificables</span></div>
+          <div class="stat"><strong>03</strong><span>Medición después del lanzamiento</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="servicios">
+    <div class="container">
+      <span class="eyebrow">Servicios</span>
+      <h2>Tecnología diseñada alrededor de tu operación</h2>
+      <p class="lead">Cada servicio tiene una finalidad concreta: captar mejores oportunidades, centralizar información, mejorar ventas o reducir trabajo repetitivo.</p>
+      <div class="grid grid-2" style="margin-top:2rem;">
+        {SERVICES.map((service, index) => (
+          <article class="card card-body service-card">
+            <span class="number">0{index + 1}</span>
+            <h3>{service.shortTitle}</h3>
+            <p class="muted">{service.description}</p>
+            <a href={`/servicios/${service.slug}/`}>Ver {service.shortTitle.toLowerCase()} →</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="border-block:1px solid var(--line);">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Forma de trabajo</span>
+        <h2>Menos promesas abstractas. Más decisiones verificables.</h2>
+        <p class="lead">Comenzamos por el problema y las personas que usarán la solución. Definimos alcance, riesgos y criterios de aceptación antes de convertir una idea en meses de desarrollo.</p>
+      </div>
+      <div class="grid">
+        {[
+          ['Comprender', 'Documentamos objetivos, procesos, usuarios y restricciones.'],
+          ['Priorizar', 'Seleccionamos la primera entrega que produzca valor y reduzca incertidumbre.'],
+          ['Construir', 'Desarrollamos por etapas con demostraciones y validación frecuente.'],
+          ['Medir', 'Observamos uso, rendimiento y resultados para decidir la siguiente mejora.'],
+        ].map(([heading, text], index) => (
+          <article class="card card-body">
+            <span class="eyebrow">0{index + 1}</span>
+            <h3>{heading}</h3>
+            <p class="muted">{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Proyectos</span>
+      <h2>Soluciones que muestran cómo pensamos</h2>
+      <p class="lead">Presentamos ejemplos del tipo de experiencia y problemas que podemos abordar. Las métricas se publican únicamente cuando pueden verificarse con el cliente.</p>
+      <div class="grid grid-3" style="margin-top:2rem;">
+        {PROJECTS.map((project) => (
+          <article class="card" style="overflow:hidden;">
+            <ResponsiveImage src={project.image} alt={project.alt} sizes="(max-width: 860px) 100vw, 33vw" />
+            <div class="card-body">
+              <span class="eyebrow">{project.category}</span>
+              <h3>{project.name}</h3>
+              <p class="muted">{project.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="button-row" style="margin-top:2rem;">
+        <a class="button button-secondary" href="/proyectos/">Ver proyectos</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="border-top:1px solid var(--line);">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Presencia local</span>
+        <h2>Servicios tecnológicos para empresas de Guatemala</h2>
+      </div>
+      <div class="prose">
+        <p>Atendemos proyectos en Ciudad de Guatemala, Cobán, Jutiapa y otras ubicaciones mediante colaboración remota. Estas ciudades se presentan como áreas de servicio, no como oficinas físicas.</p>
+        <p>Trabajamos con empresas que necesitan una página profesional, ordenar su operación comercial o transformar procesos dispersos en software confiable.</p>
+      </div>
+    </div>
+  </section>
+
+  <CTA />
+</BaseLayout>

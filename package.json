@@ -1,30 +1,34 @@
 {
-  "name": "wavdevelop",
+  "name": "wavdev",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "node ./dist/server/entry.mjs",
+    "check": "astro check",
+    "audit:lighthouse": "lighthouse http://localhost:4321/ --output=html --output-path=dist/lighthouse-home.html --only-categories=performance,accessibility,best-practices,seo"
   },
   "dependencies": {
-    "framer-motion": "^11.3.0",
+    "@astrojs/node": "10.1.4",
+    "@astrojs/react": "5.0.7",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "6.4.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-helmet-async": "^2.0.4",
-    "react-icons": "^5.2.1",
-    "react-intersection-observer": "^9.13.0",
-    "react-scroll": "^1.9.0"
+    "resend": "6.12.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-legacy": "^5.4.3",
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.40",
+    "@astrojs/check": "0.9.9",
+    "lighthouse": "^13.4.0",
     "sharp": "^0.34.5",
-    "tailwindcss": "^3.4.7",
-    "terser": "^5.47.1",
-    "vite": "^5.4.0"
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "vite": "7.3.5"
   }
 }

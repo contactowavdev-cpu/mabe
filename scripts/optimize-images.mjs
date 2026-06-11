@@ -1,33 +1,50 @@
 import sharp from 'sharp'
-import { readdirSync, mkdirSync, existsSync } from 'fs'
-import { join, extname, basename } from 'path'
+import { existsSync, readdirSync, rmSync } from 'node:fs'
+import { basename, extname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const INPUT_DIR  = './public/images'
-const OUTPUT_DIR = './public/images'
+const imageDir = fileURLToPath(new URL('../public/images/', import.meta.url))
+const socialSource = process.env.SOCIAL_SOURCE
+const responsiveNames = new Set([
+  'proj-casaalta',
+  'proj-growsales',
+  'proj-luxora',
+  'proj-mardeluz',
+  'proj-nexora',
+  'proj-talento360',
+  'svc-apps',
+  'svc-outsourcing',
+  'svc-sistemas',
+  'svc-web',
+])
 
-const files = readdirSync(INPUT_DIR).filter(f =>
-  ['.png', '.jpg', '.jpeg'].includes(extname(f).toLowerCase())
-)
+for (const file of readdirSync(imageDir).filter((name) => extname(name) === '.webp')) {
+  const name = basename(file, '.webp')
+  if (!responsiveNames.has(name)) continue
+  const input = join(imageDir, file)
 
-console.log(`\n🖼  Optimizando ${files.length} imágenes...\n`)
+  for (const width of [640, 1200]) {
+    await sharp(input)
+      .resize({ width, withoutEnlargement: true })
+      .webp({ quality: 78, effort: 6 })
+      .toFile(join(imageDir, `${name}-${width}.webp`))
 
-for (const file of files) {
-  const inputPath  = join(INPUT_DIR, file)
-  const name       = basename(file, extname(file))
-  const outputPath = join(OUTPUT_DIR, `${name}.webp`)
-
-  const meta = await sharp(inputPath).metadata()
-  const originalKB = (await import('fs')).statSync(inputPath).size / 1024
-
-  await sharp(inputPath)
-    .resize({ width: 1400, withoutEnlargement: true })
-    .webp({ quality: 82, effort: 6 })
-    .toFile(outputPath)
-
-  const newKB = (await import('fs')).statSync(outputPath).size / 1024
-  const saving = Math.round((1 - newKB / originalKB) * 100)
-
-  console.log(`  ✓ ${file.padEnd(30)} ${Math.round(originalKB)} KB → ${Math.round(newKB)} KB  (-${saving}%)`)
+    await sharp(input)
+      .resize({ width, withoutEnlargement: true })
+      .avif({ quality: 52, effort: 6 })
+      .toFile(join(imageDir, `${name}-${width}.avif`))
+  }
 }
 
-console.log('\n✅ Listo. Ahora actualiza las referencias en App.jsx de .png a .webp\n')
+if (socialSource && existsSync(socialSource)) {
+  await sharp(socialSource)
+    .resize(1200, 630, { fit: 'cover', position: 'centre' })
+    .png({ compressionLevel: 9 })
+    .toFile(join(imageDir, 'wavdev-social.png'))
+}
+
+for (const file of readdirSync(imageDir).filter((name) => extname(name) === '.png' && name !== 'wavdev-social.png')) {
+  rmSync(join(imageDir, file))
+}
+
+console.log('Responsive WebP/AVIF assets generated and unused PNG files removed.')

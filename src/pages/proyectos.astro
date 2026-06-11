@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import CTA from '../components/CTA.astro'
+import ResponsiveImage from '../components/ResponsiveImage.astro'
+import { PROJECTS, SITE } from '../data/site'
+const description = 'Conoce proyectos de CRM, portales y plataformas empresariales desarrollados por WavDev.'
+---
+<BaseLayout title="Proyectos de software y desarrollo web | WavDev" description={description}>
+  <header class="service-hero">
+    <div class="container">
+      <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Proyectos' }]} />
+      <span class="eyebrow">Portafolio</span>
+      <h1>Proyectos digitales pensados para resolver problemas reales</h1>
+      <p class="lead">Una selección de interfaces y soluciones que representan nuestra experiencia en ventas, operaciones y plataformas empresariales.</p>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container grid">
+      {PROJECTS.map((project) => (
+        <article class="card split" style="overflow:hidden;">
+          <ResponsiveImage src={project.image} alt={project.alt} sizes="(max-width: 860px) 100vw, 50vw" />
+          <div class="card-body">
+            <span class="eyebrow">{project.category}</span>
+            <h2>{project.name}</h2>
+            <p class="lead">{project.description}</p>
+            <p class="muted">La información pública se limita a características demostrables. Resultados, clientes y cifras se añadirán únicamente con autorización y evidencia verificable.</p>
+            <a class="button button-secondary" href={`${SITE.whatsapp}?text=${encodeURIComponent(`Hola WavDev, quiero un proyecto similar a ${project.name}.`)}`} target="_blank" rel="noopener noreferrer">Solicitar proyecto similar</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+  <CTA />
+</BaseLayout>
