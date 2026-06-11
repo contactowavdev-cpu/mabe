@@ -72,6 +72,11 @@ export default function ContactForm({ defaultService = '' }) {
             <option>Software para PYMES</option>
             <option>Integraciones y APIs</option>
             <option>CRM para ventas</option>
+            <option>Sistema POS</option>
+            <option>Software de inventarios</option>
+            <option>ERP para PYMES</option>
+            <option>E-commerce</option>
+            <option>Integración FEL</option>
             <option>Software inmobiliario</option>
             <option>Sistemas de RR. HH.</option>
             <option>Automatización de Excel</option>

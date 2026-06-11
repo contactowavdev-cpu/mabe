@@ -3,10 +3,24 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import Breadcrumbs from './Breadcrumbs.astro'
 import CTA from './CTA.astro'
 import { SITE } from '../data/site'
-import type { CommercialPage as PageData } from '../data/commercial'
-
 interface Props {
-  page: PageData
+  page: {
+    slug: string
+    section: 'servicios' | 'soluciones'
+    shortTitle: string
+    title: string
+    description: string
+    keyword: string
+    eyebrow: string
+    intro: readonly string[]
+    sections: readonly { heading: string; paragraphs: readonly string[] }[]
+    benefits: readonly string[]
+    useCases: readonly string[]
+    integrations: readonly string[]
+    process: readonly (readonly [string, string])[]
+    faqs: readonly (readonly [string, string])[]
+    related: readonly string[]
+  }
 }
 
 const { page } = Astro.props
@@ -54,8 +68,8 @@ const schema = [
       <h1>{page.title}</h1>
       <p class="lead">{page.description}</p>
       <div class="button-row">
-        <a class="button button-primary" href={`/contacto/?servicio=${encodeURIComponent(page.shortTitle)}`} data-cta="quote">Solicitar diagnóstico</a>
-        <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>
+        <a class="button button-primary" href={`/contacto/?servicio=${encodeURIComponent(page.shortTitle)}`} data-cta="quote" data-service={page.shortTitle}>Solicitar diagnóstico</a>
+        <a class="button button-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer" data-service={page.shortTitle}>Consultar por WhatsApp</a>
       </div>
     </div>
   </header>
@@ -82,11 +96,33 @@ const schema = [
         </section>
 
         <section>
+          <h2>Seguridad, despliegue y medición</h2>
+          <h3>Acceso y protección de información</h3>
+          <p>Definimos usuarios, permisos y datos sensibles antes de construir. Las credenciales se mantienen fuera del código, los ambientes de prueba se separan de producción y las acciones críticas pueden conservar un registro para facilitar soporte y auditoría.</p>
+          <h3>Pruebas con escenarios reales</h3>
+          <p>Las pruebas incluyen el recorrido esperado y situaciones que suelen fallar: datos incompletos, registros duplicados, usuarios sin permiso, servicios externos no disponibles y operaciones interrumpidas. Antes del lanzamiento se acuerdan responsables, respaldo y procedimiento de recuperación.</p>
+          <h3>Indicadores después del lanzamiento</h3>
+          <p>El proyecto establece una línea base y un conjunto pequeño de indicadores relacionados con el problema: tiempo por operación, errores, tareas pendientes, adopción, conversión o exactitud de datos. Estos resultados orientan las siguientes mejoras y evitan ampliar el sistema únicamente por acumular funciones.</p>
+        </section>
+
+        <section>
           <h2>Integraciones habituales</h2>
           <p>La selección final depende de las APIs, permisos y condiciones de cada proveedor.</p>
           <ul>
             {page.integrations.map((integration) => <li>{integration}</li>)}
           </ul>
+        </section>
+
+        <section class="quote-guide">
+          <h2>Qué define la inversión y el calendario</h2>
+          <p>La cotización depende de usuarios, módulos, calidad de datos, integraciones, migración, hardware y soporte. Antes de proponer un precio validamos estos factores para que el alcance pueda compararse y aceptarse con claridad.</p>
+          <ul>
+            <li>Primera fase y funciones incluidas.</li>
+            <li>Datos que deben limpiarse o migrarse.</li>
+            <li>Plataformas y proveedores externos.</li>
+            <li>Capacitación, soporte y evolución posterior.</li>
+          </ul>
+          <p>La propuesta identifica entregables, exclusiones, criterios de aceptación y costos de terceros. No prometemos una fecha o precio universal para procesos que todavía no han sido revisados.</p>
         </section>
 
         <section class="faq">
@@ -111,6 +147,7 @@ const schema = [
         <ul class="check-list">
           {page.useCases.map((item) => <li>{item}</li>)}
         </ul>
+        <a class="button button-primary aside-cta" href={`/contacto/?servicio=${encodeURIComponent(page.shortTitle)}`} data-cta="quote" data-service={page.shortTitle}>Solicitar una evaluación</a>
       </aside>
     </div>
   </section>

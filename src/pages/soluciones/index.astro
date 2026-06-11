@@ -2,9 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
 import { COMMERCIAL_PAGES } from '../../data/commercial'
+import { GROWTH_PAGES } from '../../data/growth'
 
-const solutions = COMMERCIAL_PAGES.filter((page) => page.section === 'soluciones')
-const description = 'Soluciones de CRM, software inmobiliario, recursos humanos y automatización de Excel para empresas en Guatemala.'
+const solutions = [
+  ...GROWTH_PAGES.filter((page) => page.section === 'soluciones'),
+  ...COMMERCIAL_PAGES.filter((page) => page.section === 'soluciones'),
+]
+const description = 'Soluciones POS, ERP, inventarios, CRM, software inmobiliario y automatización para empresas de Guatemala.'
 ---
 
 <BaseLayout title="Soluciones de software por proceso e industria | WavDev" description={description}>
@@ -13,7 +17,7 @@ const description = 'Soluciones de CRM, software inmobiliario, recursos humanos 
       <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Soluciones' }]} />
       <span class="eyebrow">Soluciones por necesidad</span>
       <h1>Software diseñado alrededor de procesos empresariales</h1>
-      <p class="lead">Partimos del problema operativo y conectamos servicios, integraciones y experiencia para construir una solución con alcance claro.</p>
+      <p class="lead">Explora soluciones para ventas, inventario, caja, gestión empresarial, recursos humanos y procesos que todavía dependen de archivos separados.</p>
     </div>
   </header>
   <section class="section">

@@ -1,0 +1,6 @@
+---
+import CommercialPage from '../../components/CommercialPage.astro'
+import { getGrowthPage } from '../../data/growth'
+const page = getGrowthPage('soluciones', 'software-inventarios-guatemala')!
+---
+<CommercialPage page={page} />

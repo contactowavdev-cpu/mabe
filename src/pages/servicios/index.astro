@@ -3,9 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 import Breadcrumbs from '../../components/Breadcrumbs.astro'
 import { SERVICES } from '../../data/site'
 import { COMMERCIAL_PAGES } from '../../data/commercial'
+import { GROWTH_PAGES } from '../../data/growth'
 
-const additional = COMMERCIAL_PAGES.filter((page) => page.section === 'servicios')
-const description = 'Servicios de desarrollo web, software a la medida, CRM, automatización, apps e integraciones para empresas de Guatemala.'
+const additional = [
+  ...GROWTH_PAGES.filter((page) => page.section === 'servicios'),
+  ...COMMERCIAL_PAGES.filter((page) => page.section === 'servicios'),
+]
+const description = 'Desarrollo web, e-commerce, software a la medida, CRM, automatización, apps e integraciones para empresas de Guatemala.'
 ---
 
 <BaseLayout title="Servicios de desarrollo de software en Guatemala | WavDev" description={description}>

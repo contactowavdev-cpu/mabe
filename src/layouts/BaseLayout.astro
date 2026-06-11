@@ -61,8 +61,15 @@ const websiteSchema = {
 }
 
 const schemas = Array.isArray(schema) ? schema : [schema || defaultSchema]
-// Ensure Organization and WebSite are the first schemas (avoid duplicates)
-const schemasCombined = [organizationSchema, websiteSchema, ...schemas]
+const schemaItems: Record<string, unknown>[] = [organizationSchema, websiteSchema, ...schemas]
+const schemaKey = (item: Record<string, unknown>, index: number) =>
+  String(item['@id'] || `${item['@type']}:${item.url || item.name || index}`)
+const schemasCombined = schemaItems.filter((item, index, items) => {
+  const key = schemaKey(item, index)
+  return items.findIndex((candidate, candidateIndex) => {
+    return schemaKey(candidate, candidateIndex) === key
+  }) === index
+})
 
 ---
 
@@ -71,7 +78,7 @@ const schemasCombined = [organizationSchema, websiteSchema, ...schemas]
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#040c10" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large'} />

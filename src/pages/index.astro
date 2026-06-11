@@ -48,13 +48,13 @@ const schema = [
     <div class="container hero-inner">
       <div class="hero-orbit" aria-hidden="true"></div>
       <div class="hero-copy">
-        <span class="eyebrow">Empresa de tecnología en Guatemala</span>
-        <h1>Desarrollo de software y soluciones tecnológicas en Guatemala</h1>
+        <span class="eyebrow">Software que mueve empresas</span>
+        <h1>Software para empresas de Guatemala que <span class="gradient-text">sí hace avanzar.</span></h1>
         <p class="lead">
-          Creamos páginas web, sistemas empresariales, CRM y automatizaciones que ayudan a convertir procesos manuales en operaciones más claras, rápidas y medibles.
+          Diseñamos páginas web, sistemas empresariales, CRM y automatizaciones para que las empresas de Guatemala vendan mejor, trabajen con claridad y puedan crecer sin sumar caos.
         </p>
         <div class="button-row">
-          <a class="button button-primary" href="/contacto/">Cuéntanos tu proyecto</a>
+          <a class="button button-primary" href="/contacto/">Evaluar mi proyecto →</a>
           <a class="button button-secondary" href="#servicios">Explorar servicios</a>
         </div>
         <div class="stat-strip" aria-label="Enfoque de WavDev">
@@ -63,15 +63,46 @@ const schema = [
           <div class="stat"><strong>03</strong><span>Medición después del lanzamiento</span></div>
         </div>
       </div>
+      <div class="hero-console" aria-label="Vista conceptual de una operación empresarial conectada">
+        <div class="console-bar">
+          <div class="console-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          <span>WavDev / centro operativo</span>
+        </div>
+        <div class="console-panel">
+          <div class="console-heading">
+            <strong>Tu operación, conectada</strong>
+            <span class="status-pill">EN LÍNEA</span>
+          </div>
+          <div class="console-grid">
+            <div class="console-metric"><span>Ventas y clientes</span><strong>CRM + WhatsApp</strong></div>
+            <div class="console-metric"><span>Control operativo</span><strong>ERP + inventario</strong></div>
+            <div class="console-metric"><span>Canal digital</span><strong>Web + e-commerce</strong></div>
+            <div class="console-metric"><span>Trabajo repetitivo</span><strong>Automatización</strong></div>
+          </div>
+          <div class="console-activity">Información lista para decidir, no para buscar.</div>
+          <div class="console-activity">Procesos pensados para las personas que los usan.</div>
+        </div>
+      </div>
     </div>
   </section>
 
+  <div class="capability-rail" aria-label="Capacidades de WavDev">
+    <div class="capability-track">
+      <span>Desarrollo web</span><span>Sistemas a la medida</span><span>CRM</span><span>ERP</span><span>POS</span><span>Automatización</span><span>E-commerce</span>
+      <span aria-hidden="true">Desarrollo web</span><span aria-hidden="true">Sistemas a la medida</span><span aria-hidden="true">CRM</span><span aria-hidden="true">ERP</span><span aria-hidden="true">POS</span><span aria-hidden="true">Automatización</span><span aria-hidden="true">E-commerce</span>
+    </div>
+  </div>
+
   <section class="section" id="servicios">
     <div class="container">
-      <span class="eyebrow">Servicios</span>
-      <h2>Tecnología diseñada alrededor de tu operación</h2>
-      <p class="lead">Cada servicio tiene una finalidad concreta: captar mejores oportunidades, centralizar información, mejorar ventas o reducir trabajo repetitivo.</p>
-      <div class="grid grid-2" style="margin-top:2rem;">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Servicios</span>
+          <h2>Tecnología con una tarea clara.</h2>
+        </div>
+        <p class="lead">Captar oportunidades, centralizar información, mejorar ventas o reducir trabajo repetitivo. Sin software decorativo.</p>
+      </div>
+      <div class="grid grid-2">
         {SERVICES.map((service, index) => (
           <article class="card card-body service-card">
             <span class="number">0{index + 1}</span>
@@ -84,22 +115,21 @@ const schema = [
     </div>
   </section>
 
-  <section class="section" style="border-block:1px solid var(--line);">
+  <section class="section accent-section">
     <div class="container split">
       <div>
         <span class="eyebrow">Forma de trabajo</span>
         <h2>Menos promesas abstractas. Más decisiones verificables.</h2>
         <p class="lead">Comenzamos por el problema y las personas que usarán la solución. Definimos alcance, riesgos y criterios de aceptación antes de convertir una idea en meses de desarrollo.</p>
       </div>
-      <div class="grid">
+      <div class="grid method-grid">
         {[
           ['Comprender', 'Documentamos objetivos, procesos, usuarios y restricciones.'],
           ['Priorizar', 'Seleccionamos la primera entrega que produzca valor y reduzca incertidumbre.'],
           ['Construir', 'Desarrollamos por etapas con demostraciones y validación frecuente.'],
           ['Medir', 'Observamos uso, rendimiento y resultados para decidir la siguiente mejora.'],
-        ].map(([heading, text], index) => (
-          <article class="card card-body">
-            <span class="eyebrow">0{index + 1}</span>
+        ].map(([heading, text]) => (
+          <article class="card card-body method-card">
             <h3>{heading}</h3>
             <p class="muted">{text}</p>
           </article>
@@ -149,9 +179,11 @@ const schema = [
       <span class="eyebrow">Soluciones especializadas</span>
       <h2>Explora por proceso e industria</h2>
       <div class="grid grid-2" style="margin-top:2rem;">
-        <a class="card card-body related-link" href="/soluciones/crm-para-equipos-de-ventas/"><span>Ventas</span><strong>CRM para equipos comerciales</strong></a>
-        <a class="card card-body related-link" href="/soluciones/software-para-inmobiliarias/"><span>Inmobiliarias</span><strong>Portales, inventario y seguimiento</strong></a>
-        <a class="card card-body related-link" href="/soluciones/sistemas-de-recursos-humanos/"><span>Recursos humanos</span><strong>Reclutamiento y procesos de talento</strong></a>
+        <a class="card card-body related-link" href="/soluciones/sistema-pos-guatemala/"><span>Comercios</span><strong>Sistema POS, caja y sucursales</strong></a>
+        <a class="card card-body related-link" href="/soluciones/software-inventarios-guatemala/"><span>Inventarios</span><strong>Bodegas, compras y existencias</strong></a>
+        <a class="card card-body related-link" href="/soluciones/erp-para-pymes-guatemala/"><span>Gestión empresarial</span><strong>ERP modular para PYMES</strong></a>
+        <a class="card card-body related-link" href="/soluciones/crm-ventas-guatemala/"><span>Ventas</span><strong>CRM, cotizaciones y seguimiento</strong></a>
+        <a class="card card-body related-link" href="/servicios/desarrollo-ecommerce-guatemala/"><span>Comercio electrónico</span><strong>Tiendas conectadas con inventario</strong></a>
         <a class="card card-body related-link" href="/soluciones/automatizar-procesos-con-excel/"><span>Operaciones</span><strong>Automatización de procesos con Excel</strong></a>
       </div>
     </div>
@@ -172,6 +204,8 @@ const schema = [
           <a href="/recursos/sistema-a-la-medida-vs-erp/">Sistema a la medida vs. ERP</a>
           <a href="/recursos/como-elegir-crm-empresa-guatemala/">Cómo elegir un CRM</a>
           <a href="/recursos/como-automatizar-procesos-que-dependen-de-excel/">Cómo automatizar procesos con Excel</a>
+          <a href="/recursos/como-elegir-sistema-pos-guatemala/">Cómo elegir un sistema POS</a>
+          <a href="/recursos/como-controlar-inventario-varias-bodegas/">Controlar inventario en varias bodegas</a>
         </div>
       </div>
     </div>
