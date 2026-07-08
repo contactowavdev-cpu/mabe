@@ -5,6 +5,8 @@ WORKDIR /app
 ENV NODE_ENV=development
 
 COPY package.json package-lock.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY apps/ordenes-pwa/package.json ./apps/ordenes-pwa/package.json
 RUN npm ci
 
 COPY . .
