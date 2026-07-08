@@ -6,4 +6,9 @@ export class HealthController {
   check() {
     return { ok: true }
   }
+
+  @Get('/')
+  checkWithSlash() {
+    return { ok: true }
+  }
 }

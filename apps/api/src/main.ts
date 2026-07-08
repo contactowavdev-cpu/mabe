@@ -20,7 +20,7 @@ async function bootstrap() {
   app.use('/uploads', express.static(config.get('UPLOAD_DIR') ?? './uploads'))
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
 
-  await app.listen(process.env.PORT ?? 3000)
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0')
 }
 
 bootstrap()
