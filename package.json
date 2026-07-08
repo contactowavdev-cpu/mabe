@@ -1,32 +1,22 @@
 {
-  "name": "wavdev",
+  "name": "mabe",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro check && astro build",
-    "start": "node ./dist/server/entry.mjs",
-    "preview": "node ./dist/server/entry.mjs",
-    "check": "astro check",
-    "audit:lighthouse": "lighthouse http://localhost:4321/ --output=html --output-path=dist/lighthouse-home.html --only-categories=performance,accessibility,best-practices,seo"
-  },
-  "dependencies": {
-    "@astrojs/node": "10.1.4",
-    "@astrojs/react": "5.0.7",
-    "@astrojs/sitemap": "3.7.3",
-    "@fontsource-variable/manrope": "^5.2.8",
-    "@fontsource-variable/space-grotesk": "^5.2.10",
-    "astro": "6.4.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "resend": "6.12.4"
-  },
-  "devDependencies": {
-    "@astrojs/check": "0.9.9",
-    "lighthouse": "^13.4.0",
-    "sharp": "^0.34.5",
-    "typescript": "6.0.3"
+    "dev": "npm run dev:pwa",
+    "dev:pwa": "npm run dev -w @mabe/ordenes-pwa",
+    "dev:api": "npm run start:dev -w @mabe/api",
+    "build:pwa": "npm run build -w @mabe/ordenes-pwa",
+    "build:api": "npm run build -w @mabe/api",
+    "build": "npm run build:api",
+    "build:all": "npm run build:api && npm run build:pwa",
+    "start": "npm run start -w @mabe/api",
+    "preview": "npm run preview -w @mabe/ordenes-pwa",
+    "prisma:generate": "npm run prisma:generate -w @mabe/api"
   },
   "engines": {
     "node": ">=22.12.0"

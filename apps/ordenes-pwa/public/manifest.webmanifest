@@ -1,0 +1,17 @@
+{
+  "name": "Mabe Ordenes Tecnicas",
+  "short_name": "Mabe",
+  "description": "PWA para gestion tecnica de ordenes, fotos y firmas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffdf5",
+  "theme_color": "#071a2f",
+  "icons": [
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

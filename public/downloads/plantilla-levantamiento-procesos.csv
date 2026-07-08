@@ -1,2 +1,0 @@
-proceso,paso,responsable,frecuencia,personas_involucradas,minutos_por_ejecucion,herramienta_entrada,herramienta_salida,error_frecuente,costo_del_error,regla_o_aprobacion,indicador_actual,meta,observaciones
-"Ejemplo: seguimiento de cotizaciones","Revisar cotizaciones sin respuesta","Ventas","Diaria",3,45,"CRM o Excel","WhatsApp o correo","Seguimiento vencido",150,"Contactar después de 48 horas","Oportunidades sin actividad","Reducir 50%","Reemplaza este ejemplo con datos reales"

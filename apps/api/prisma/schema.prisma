@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  superadmin
+  admin
+  supervisor
+  technician
+}
+
+enum PdfImportStatus {
+  pending_review
+  confirmed
+  failed
+}
+
+model User {
+  id              BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  username        String?          @map("nombre_usuario")
+  name            String           @map("nombre_completo")
+  email           String           @unique
+  emailVerifiedAt DateTime?        @map("email_verificado_en")
+  passwordHash    String           @map("password")
+  phone           String?          @map("telefono")
+  birthDate       DateTime?        @map("fecha_nac") @db.Date
+  rememberToken   String?          @map("remember_token")
+  role            UserRole         @default(technician)
+  active          Boolean          @default(true)
+  orders          Order[]          @relation("TechnicianOrders")
+  supervisorLinks SupervisorLink[]
+  pdfImports      PdfImport[]
+  createdAt       DateTime?        @map("created_at")
+  updatedAt       DateTime?        @updatedAt @map("updated_at")
+
+  @@map("tb_usuarios")
+}
+
+model OrderStatus {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  name      String   @unique
+  color     String
+  icon      String
+  priority  Int      @default(99)
+  orders    Order[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("order_statuses")
+}
+
+model Order {
+  id                       BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  technicianId             BigInt       @map("usuario_id") @db.UnsignedBigInt
+  orderStatusId            BigInt?      @map("order_status_id") @db.UnsignedBigInt
+  orderNumber              String       @unique @map("numero_orden") @db.VarChar(50)
+  statusText               String       @default("pendiente") @map("estado") @db.VarChar(30)
+  subtotal                 Decimal?     @db.Decimal(12, 2)
+  total                    Decimal?     @db.Decimal(12, 2)
+  orderDate                DateTime?    @map("fecha_orden")
+  deliveryDate             DateTime?    @map("fecha_entrega") @db.Date
+  completedAt              DateTime?    @map("fecha_completado")
+  deliveryAddress          String?      @map("direccion_entrega") @db.Text
+  notes                    String?      @map("notas") @db.Text
+  customerName             String?      @map("customer_name")
+  customerIdCard           String?      @map("customer_id_card")
+  postalCode               String?      @map("postal_code")
+  crossStreets             String?      @map("cross_streets") @db.Text
+  neighborhood             String?
+  homePhone                String?      @map("home_phone")
+  cellPhone                String?      @map("cell_phone")
+  officePhone              String?      @map("office_phone")
+  phoneExtension           String?      @map("phone_extension")
+  assignedToType           String?      @map("assigned_to_type")
+  purchasePlaceOrigin      String?      @map("purchase_place_origin")
+  technicianNumber         String?      @map("technician_number")
+  modelOrigin              String?      @map("model_origin")
+  moduleOrigin             String?      @map("module_origin")
+  serialNumberOrigin       String?      @map("serial_number_origin")
+  baseOrigin               String?      @map("base_origin")
+  productDescriptionOrigin String?      @map("product_description_origin") @db.Text
+  confirmedPurchasePlace   String?      @map("confirmed_purchase_place")
+  confirmedInvoiceNumber   String?      @map("confirmed_invoice_number")
+  confirmedPurchaseDate    DateTime?    @map("confirmed_purchase_date") @db.Date
+  confirmedBrand           String?      @map("confirmed_brand")
+  confirmedModel           String?      @map("confirmed_model")
+  confirmedSerialNumber    String?      @map("confirmed_serial_number")
+  requiresInvoice          Boolean      @default(false) @map("requires_invoice")
+  partNumber               String?      @map("part_number")
+  description1             String?      @map("description_1") @db.Text
+  description2             String?      @map("description_2") @db.Text
+  description3             String?      @map("description_3") @db.Text
+  kilometersTraveled       Decimal?     @map("kilometers_traveled") @db.Decimal(10, 2)
+  locationPlace            String?      @map("location_place")
+  publicToken              String?      @unique @map("public_token")
+  clientSignaturePath      String?      @map("client_signature_path")
+  isCompleted              Boolean      @default(false) @map("is_completed")
+  technician               User         @relation("TechnicianOrders", fields: [technicianId], references: [id])
+  status                   OrderStatus? @relation(fields: [orderStatusId], references: [id])
+  photos                   OrderPhoto[]
+  createdAt                DateTime?    @map("created_at")
+  updatedAt                DateTime?    @updatedAt @map("updated_at")
+
+  @@index([technicianId])
+  @@index([orderStatusId])
+  @@map("ordenes")
+}
+
+model OrderPhoto {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  orderId      BigInt   @map("order_id") @db.UnsignedBigInt
+  photoPath    String   @map("photo_path")
+  originalName String?  @map("original_name")
+  mimeType     String   @map("mime_type")
+  size         Int
+  sortOrder    Int      @default(0) @map("sort_order")
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@map("order_photos")
+}
+
+model SupervisorLink {
+  id              BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  token           String   @unique
+  expiresAt       DateTime @map("expires_at")
+  createdByUserId BigInt   @map("created_by_user_id") @db.UnsignedBigInt
+  createdBy        User    @relation(fields: [createdByUserId], references: [id])
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("supervisor_links")
+}
+
+model PdfImport {
+  id               BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  userId           BigInt          @map("user_id") @db.UnsignedBigInt
+  filePath         String          @map("file_path")
+  extractedText    String?         @map("extracted_text") @db.LongText
+  extractedPayload Json?           @map("extracted_payload")
+  status           PdfImportStatus @default(pending_review)
+  user             User            @relation(fields: [userId], references: [id])
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("pdf_imports")
+}

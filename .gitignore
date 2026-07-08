@@ -1,8 +1,16 @@
 node_modules
+.claude/
+.agents/
 dist
+apps/**/dist
 .astro
 .env
+.env.*
+apps/**/.env
+apps/**/.env.*
 .env.local
 .env.production
 *.log
+*.tsbuildinfo
+apps/api/uploads/
 reports/
