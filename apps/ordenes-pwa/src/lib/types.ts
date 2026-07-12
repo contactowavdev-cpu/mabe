@@ -5,6 +5,8 @@ export type User = {
   name: string
   email: string
   role: Role
+  phone?: string
+  active?: boolean
 }
 
 export type OrderStatus = {

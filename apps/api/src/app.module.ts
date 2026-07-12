@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module'
 import { PublicModule } from './public/public.module'
 import { StorageModule } from './storage/storage.module'
 import { SupervisorLinksModule } from './supervisor-links/supervisor-links.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SupervisorLinksModule } from './supervisor-links/supervisor-links.modul
     PdfImportsModule,
     SupervisorLinksModule,
     PublicModule,
+    UsersModule,
   ],
   controllers: [HealthController],
 })
