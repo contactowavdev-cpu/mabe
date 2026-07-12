@@ -60,6 +60,7 @@ const orderColumns: Array<[string, string]> = [
   ['description_2', 'TEXT NULL'],
   ['description_3', 'TEXT NULL'],
   ['kilometers_traveled', 'DECIMAL(10,2) NULL'],
+  ['fuel_cost', 'DECIMAL(10,2) NULL'],
   ['location_place', 'VARCHAR(255) NULL'],
   ['public_token', 'VARCHAR(120) NULL'],
   ['client_signature_path', 'VARCHAR(500) NULL'],

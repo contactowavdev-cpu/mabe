@@ -3,11 +3,15 @@ import { AlertCircle, CalendarDays, MapPin, Phone, Search, Trash2 } from 'lucide
 import { Link } from 'react-router-dom'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { api } from '../../lib/api'
+import { useAuthStore } from '../../lib/auth-store'
 import { cacheOrders, getCachedOrders } from '../../lib/offline'
 import { Order } from '../../lib/types'
 
 export function DashboardPage() {
   const queryClient = useQueryClient()
+  const user = useAuthStore((state) => state.user)
+  const canDeleteOrders = user?.role === 'technician' || user?.role === 'superadmin'
+  const isAdminReview = user?.role === 'admin' || user?.role === 'supervisor'
   const query = useQuery({
     queryKey: ['orders'],
     queryFn: async () => {
@@ -58,7 +62,7 @@ export function DashboardPage() {
       <div className="section-heading">
         <div>
           <p className="eyebrow">Prioridad por estado</p>
-          <h2>Ordenes asignadas</h2>
+          <h2>{isAdminReview ? 'Ordenes realizadas' : 'Ordenes asignadas'}</h2>
         </div>
       </div>
 
@@ -86,7 +90,7 @@ export function DashboardPage() {
               </div>
             </Link>
 
-            <div className="card-actions">
+            {canDeleteOrders ? <div className="card-actions">
               <button
                 className="danger-button subtle"
                 onClick={() => {
@@ -96,7 +100,7 @@ export function DashboardPage() {
               >
                 <Trash2 size={16} /> Eliminar
               </button>
-            </div>
+            </div> : null}
           </article>
         ))}
       </div>

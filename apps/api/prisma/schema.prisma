@@ -96,6 +96,7 @@ model Order {
   description2             String?      @map("description_2") @db.Text
   description3             String?      @map("description_3") @db.Text
   kilometersTraveled       Decimal?     @map("kilometers_traveled") @db.Decimal(10, 2)
+  fuelCost                 Decimal?     @map("fuel_cost") @db.Decimal(10, 2)
   locationPlace            String?      @map("location_place")
   publicToken              String?      @unique @map("public_token")
   clientSignaturePath      String?      @map("client_signature_path")

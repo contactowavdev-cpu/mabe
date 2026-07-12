@@ -41,6 +41,7 @@ type EditableOrderField = keyof Pick<
   | 'description2'
   | 'orderPayment'
   | 'kilometersTraveled'
+  | 'fuelCost'
 >
 
 type EditableOrder = Partial<Record<EditableOrderField, string | boolean>>
@@ -97,6 +98,7 @@ const fieldSections: Array<{
       { key: 'confirmedSerialNumber', label: 'Serie confirmada' },
       { key: 'description2', label: 'Descripcion del trabajo', multiline: true },
       { key: 'kilometersTraveled', label: 'Kilometros', type: 'number' },
+      { key: 'fuelCost', label: 'Gasolina', type: 'number' },
       { key: 'orderPayment', label: 'Pago / total', type: 'number' },
     ],
   },
@@ -176,6 +178,7 @@ function orderToForm(order: Order): EditableOrder {
     description1: editableValue(order.description1),
     description2: editableValue(order.description2),
     kilometersTraveled: editableValue(order.kilometersTraveled),
+    fuelCost: editableValue(order.fuelCost),
     orderPayment: editableValue(order.orderPayment),
   }
 }
@@ -225,6 +228,7 @@ function formToPayload(form: EditableOrder) {
     description1: cleanText('description1'),
     description2: cleanText('description2'),
     kilometersTraveled: cleanNumber('kilometersTraveled'),
+    fuelCost: cleanNumber('fuelCost'),
     orderPayment: cleanNumber('orderPayment'),
   }
 }
@@ -234,6 +238,7 @@ export function OrderDetailPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const token = useAuthStore((state) => state.accessToken)
+  const user = useAuthStore((state) => state.user)
   const [form, setForm] = useState<EditableOrder>({})
   const [photoError, setPhotoError] = useState('')
   const query = useQuery({ queryKey: ['order', id], queryFn: () => api<Order>(`/orders/${id}`) })
@@ -299,6 +304,7 @@ export function OrderDetailPage() {
 
   const order = query.data
   if (!order) return <p className="muted">Cargando detalle...</p>
+  const isReviewOnly = user?.role === 'admin' || user?.role === 'supervisor'
   const orderNumber = order.orderNumber
   const publicUrl = order.publicToken ? `${location.origin}/public/order/${order.publicToken}` : ''
   const updateField = (key: EditableOrderField, value: string | boolean) => setForm((current) => ({ ...current, [key]: value }))
@@ -342,7 +348,7 @@ export function OrderDetailPage() {
           Estado
           <select
             value={order.status?.id ?? ''}
-            disabled={updateStatus.isPending}
+            disabled={updateStatus.isPending || isReviewOnly}
             onChange={(event) => updateStatus.mutate(event.target.value)}
           >
             {statuses.data?.map((status) => (
@@ -357,7 +363,7 @@ export function OrderDetailPage() {
               deleteOrder.mutate()
             }
           }}
-          disabled={deleteOrder.isPending}
+          disabled={deleteOrder.isPending || isReviewOnly}
         >
           <Trash2 size={18} /> Eliminar
         </button>
@@ -375,9 +381,9 @@ export function OrderDetailPage() {
             <span>Ordenes tecnicas</span>
             <h3>Campos para llenar antes de firma</h3>
           </div>
-          <button className="primary-button compact" onClick={() => saveOrder.mutate()} disabled={saveOrder.isPending}>
+          {!isReviewOnly ? <button className="primary-button compact" onClick={() => saveOrder.mutate()} disabled={saveOrder.isPending}>
             <Save size={18} /> {saveOrder.isPending ? 'Guardando...' : 'Guardar'}
-          </button>
+          </button> : null}
         </div>
 
         {fieldSections.map((section) => (
@@ -394,12 +400,14 @@ export function OrderDetailPage() {
                     <textarea
                       rows={3}
                       value={editableValue(form[field.key])}
+                      disabled={isReviewOnly}
                       onChange={(event) => updateField(field.key, event.target.value)}
                     />
                   ) : (
                     <input
                       type={field.type ?? 'text'}
                       value={editableValue(form[field.key])}
+                      disabled={isReviewOnly}
                       onChange={(event) => updateField(field.key, event.target.value)}
                     />
                   )}
@@ -409,6 +417,7 @@ export function OrderDetailPage() {
                 <input
                   type="checkbox"
                   checked={Boolean(form.requiresInvoice)}
+                  disabled={isReviewOnly}
                   onChange={(event) => updateField('requiresInvoice', event.target.checked)}
                 />
                 Requiere factura
@@ -422,17 +431,17 @@ export function OrderDetailPage() {
         <button className="secondary-button" onClick={downloadOrderPdf}>
           <Download size={18} /> PDF orden
         </button>
-        <label className="file-button">
+        {!isReviewOnly ? <label className="file-button">
           <Camera size={18} /> {uploadPhoto.isPending ? 'Subiendo...' : 'Tomar foto'}
           <input type="file" accept="image/*" capture="environment" onChange={(event) => {
             const file = event.target.files?.[0]
             if (file) uploadPhoto.mutate(file)
             event.currentTarget.value = ''
           }} />
-        </label>
+        </label> : null}
       </div>
 
-      <div className="action-row">
+      {!isReviewOnly ? <div className="action-row">
         <button className="primary-button compact" onClick={() => complete.mutate()} disabled={complete.isPending}>
           <CheckCircle2 size={18} /> Finalizar
         </button>
@@ -445,7 +454,7 @@ export function OrderDetailPage() {
             <Copy size={18} /> Generar URL firma
           </button>
         )}
-      </div>
+      </div> : null}
 
       <section className="media-section">
         <div className="section-heading">

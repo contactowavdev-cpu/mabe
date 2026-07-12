@@ -55,6 +55,7 @@ export type Order = {
   description3?: string
   orderPayment?: string | number
   kilometersTraveled?: string
+  fuelCost?: string | number
   locationPlace?: string
   orderDate: string
   publicToken?: string

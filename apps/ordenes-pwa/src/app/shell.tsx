@@ -6,6 +6,7 @@ export function AppShell() {
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
+  const canOperateOrders = user?.role === 'technician' || user?.role === 'superadmin'
 
   return (
     <div className="app-shell">
@@ -29,8 +30,8 @@ export function AppShell() {
 
       <nav className="mobile-nav" aria-label="Navegacion principal">
         <NavLink to="/" title="Ordenes"><Home size={21} /><span>Ordenes</span></NavLink>
-        <NavLink to="/orders/new" title="Nueva orden"><Plus size={22} /><span>Nueva</span></NavLink>
-        <NavLink to="/pdf-imports/new" title="Importar PDF"><FileUp size={21} /><span>PDF</span></NavLink>
+        {canOperateOrders ? <NavLink to="/orders/new" title="Nueva orden"><Plus size={22} /><span>Nueva</span></NavLink> : null}
+        {canOperateOrders ? <NavLink to="/pdf-imports/new" title="Importar PDF"><FileUp size={21} /><span>PDF</span></NavLink> : null}
         <NavLink to="/settings" title="Ajustes"><Settings size={21} /><span>Ajustes</span></NavLink>
       </nav>
     </div>

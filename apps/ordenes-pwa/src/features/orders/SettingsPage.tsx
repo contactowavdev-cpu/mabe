@@ -34,12 +34,14 @@ export function SettingsPage() {
       active: 0,
       payment: 0,
       kilometers: 0,
+      fuel: 0,
     }
     current.total += 1
     current.completed += order.isCompleted ? 1 : 0
     current.active += order.isCompleted ? 0 : 1
     current.payment += toNumber(order.orderPayment)
     current.kilometers += toNumber(order.kilometersTraveled)
+    current.fuel += toNumber(order.fuelCost)
     groups.set(technicianName, current)
     return groups
   }, new Map<string, {
@@ -49,6 +51,7 @@ export function SettingsPage() {
     active: number
     payment: number
     kilometers: number
+    fuel: number
   }>()).values()).sort((a, b) => b.completed - a.completed)
 
   async function createSupervisorLink() {
@@ -111,6 +114,7 @@ export function SettingsPage() {
               <span>Ordenes</span>
               <span>Finalizadas</span>
               <span>Pago</span>
+              <span>Gasolina</span>
               <span>Distancia</span>
             </div>
             {technicianRows.map((row) => (
@@ -119,6 +123,7 @@ export function SettingsPage() {
                 <span>{row.total} total / {row.active} activas</span>
                 <span>{row.completed}</span>
                 <span>{money.format(row.payment)}</span>
+                <span>{money.format(row.fuel)}</span>
                 <span>{number.format(row.kilometers)} km</span>
               </div>
             ))}

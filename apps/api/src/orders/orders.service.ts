@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { Prisma, UserRole } from '@prisma/client'
 import { Buffer } from 'node:buffer'
 import { randomBytes } from 'node:crypto'
@@ -10,7 +10,7 @@ import { PrismaService } from '../prisma/prisma.service'
 import { StorageService } from '../storage/storage.service'
 import { CreateOrderDto, UpdateOrderDto } from './dto'
 
-const elevatedRoles: UserRole[] = [UserRole.superadmin, UserRole.admin, UserRole.supervisor]
+const reviewOnlyRoles: UserRole[] = [UserRole.admin, UserRole.supervisor]
 const toBigIntId = (id: string | number | bigint) => typeof id === 'bigint' ? id : BigInt(id)
 
 @Injectable()
@@ -32,10 +32,14 @@ export class OrdersService {
   }
 
   async create(user: AuthUser, dto: CreateOrderDto) {
+    if (reviewOnlyRoles.includes(user.role)) {
+      throw new ForbiddenException('El administrador solo puede revisar ordenes realizadas')
+    }
+
     const pending = await this.prisma.orderStatus.findUnique({ where: { name: 'Pendiente' } })
     if (!pending) throw new BadRequestException('Debe ejecutar el seed de estados')
 
-    const technicianId = elevatedRoles.includes(user.role) ? dto.technicianId ?? user.sub : user.sub
+    const technicianId = user.role === UserRole.superadmin ? dto.technicianId ?? user.sub : user.sub
     const existing = await this.prisma.order.findUnique({ where: { orderNumber: dto.orderNumber } })
     if (existing) {
       return this.prisma.order.update({
@@ -66,6 +70,7 @@ export class OrdersService {
 
   async update(user: AuthUser, id: string, dto: UpdateOrderDto) {
     await this.findOne(user, id)
+    await this.assertCanOperateOrder(user, id)
     return this.prisma.order.update({
       where: { id: toBigIntId(id) },
       data: this.mapOrderUpdateDto(dto),
@@ -75,6 +80,7 @@ export class OrdersService {
 
   async updateStatus(user: AuthUser, id: string, orderStatusId: string) {
     await this.findOne(user, id)
+    await this.assertCanOperateOrder(user, id)
     const status = await this.prisma.orderStatus.findUnique({ where: { id: toBigIntId(orderStatusId) } })
     if (!status) throw new BadRequestException('Estado no encontrado')
 
@@ -92,6 +98,7 @@ export class OrdersService {
 
   async delete(user: AuthUser, id: string) {
     await this.findOne(user, id)
+    await this.assertCanOperateOrder(user, id)
     await this.prisma.order.delete({ where: { id: toBigIntId(id) } })
     return { ok: true }
   }
@@ -190,6 +197,7 @@ export class OrdersService {
 
   async addPhoto(user: AuthUser, id: string, file: Express.Multer.File) {
     await this.findOne(user, id)
+    await this.assertCanOperateOrder(user, id)
     if (!file) throw new BadRequestException('Debe seleccionar una foto')
 
     const orderId = toBigIntId(id)
@@ -229,6 +237,7 @@ export class OrdersService {
 
   async complete(user: AuthUser, id: string) {
     await this.findOne(user, id)
+    await this.assertCanOperateOrder(user, id)
     const finalized = await this.prisma.orderStatus.findUnique({ where: { name: 'Finalizado' } })
     if (!finalized) throw new BadRequestException('Falta estado Finalizado')
 
@@ -245,7 +254,29 @@ export class OrdersService {
   }
 
   visibleWhere(user: AuthUser): Prisma.OrderWhereInput {
-    return elevatedRoles.includes(user.role) ? {} : { technicianId: toBigIntId(user.sub) }
+    if (user.role === UserRole.superadmin) return {}
+    if (reviewOnlyRoles.includes(user.role)) {
+      return {
+        isCompleted: true,
+        clientSignaturePath: { not: null },
+      }
+    }
+    return { technicianId: toBigIntId(user.sub) }
+  }
+
+  private async assertCanOperateOrder(user: AuthUser, id: string) {
+    if (user.role === UserRole.superadmin) return
+    if (reviewOnlyRoles.includes(user.role)) {
+      throw new ForbiddenException('El administrador solo puede revisar ordenes realizadas')
+    }
+
+    const order = await this.prisma.order.findUnique({
+      where: { id: toBigIntId(id) },
+      select: { technicianId: true },
+    })
+    if (!order || order.technicianId !== toBigIntId(user.sub)) {
+      throw new ForbiddenException('No puede modificar esta orden')
+    }
   }
 
   private toLegacyStatusText(statusName: string) {
@@ -288,6 +319,7 @@ export class OrdersService {
       orderDate: dto.orderDate ? new Date(dto.orderDate) : undefined,
       total: dto.orderPayment,
       kilometersTraveled: dto.kilometersTraveled,
+      fuelCost: dto.fuelCost,
       locationPlace: dto.locationPlace,
       technician: { connect: { id: toBigIntId(technicianId) } },
       status: { connect: { id: orderStatusId } },
@@ -328,6 +360,7 @@ export class OrdersService {
       orderDate: dto.orderDate ? new Date(dto.orderDate) : undefined,
       total: dto.orderPayment,
       kilometersTraveled: dto.kilometersTraveled,
+      fuelCost: dto.fuelCost,
       locationPlace: dto.locationPlace,
       orderNumber: dto.orderNumber,
       customerName: dto.customerName,

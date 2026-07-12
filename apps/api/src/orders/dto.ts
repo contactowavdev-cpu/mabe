@@ -35,6 +35,7 @@ export class CreateOrderDto {
   @IsOptional() @IsDateString() orderDate?: string
   @IsOptional() @Type(() => Number) @IsNumber() orderPayment?: number
   @IsOptional() @Type(() => Number) @IsNumber() kilometersTraveled?: number
+  @IsOptional() @Type(() => Number) @IsNumber() fuelCost?: number
   @IsOptional() @IsString() locationPlace?: string
 }
 

@@ -16,6 +16,11 @@ function Protected({ children }: { children: ReactElement }) {
   return token ? children : <Navigate to="/login" replace />
 }
 
+function TechnicianOnly({ children }: { children: ReactElement }) {
+  const user = useAuthStore((state) => state.user)
+  return user?.role === 'technician' || user?.role === 'superadmin' ? children : <Navigate to="/" replace />
+}
+
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/public/order/:token', element: <PublicOrderPage /> },
@@ -29,9 +34,9 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: 'orders/new', element: <NewOrderPage /> },
+      { path: 'orders/new', element: <TechnicianOnly><NewOrderPage /></TechnicianOnly> },
       { path: 'orders/:id', element: <OrderDetailPage /> },
-      { path: 'pdf-imports/new', element: <PdfImportPage /> },
+      { path: 'pdf-imports/new', element: <TechnicianOnly><PdfImportPage /></TechnicianOnly> },
       { path: 'settings', element: <SettingsPage /> },
     ],
   },
