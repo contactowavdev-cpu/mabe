@@ -104,6 +104,44 @@ const fieldSections: Array<{
 
 const editableValue = (value: unknown) => value === null || value === undefined ? '' : String(value)
 
+async function compressPhotoForUpload(file: File) {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Selecciona un archivo de imagen valido.')
+  }
+
+  const imageUrl = URL.createObjectURL(file)
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = document.createElement('img')
+      img.onload = () => resolve(img)
+      img.onerror = () => reject(new Error('No se pudo leer la imagen. Si es HEIC, cambia la camara a JPG o selecciona otra foto.'))
+      img.src = imageUrl
+    })
+
+    const maxSide = 1600
+    const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight))
+    const width = Math.max(1, Math.round(image.naturalWidth * scale))
+    const height = Math.max(1, Math.round(image.naturalHeight * scale))
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error('No se pudo preparar la compresion de la foto.')
+    context.drawImage(image, 0, 0, width, height)
+
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((nextBlob) => {
+        if (nextBlob) resolve(nextBlob)
+        else reject(new Error('No se pudo comprimir la foto.'))
+      }, 'image/jpeg', 0.72)
+    })
+
+    return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })
+  } finally {
+    URL.revokeObjectURL(imageUrl)
+  }
+}
+
 function orderToForm(order: Order): EditableOrder {
   return {
     orderNumber: editableValue(order.orderNumber),
@@ -216,9 +254,10 @@ export function OrderDetailPage() {
     },
   })
   const uploadPhoto = useMutation({
-    mutationFn: (file: File) => {
+    mutationFn: async (file: File) => {
+      const compressed = await compressPhotoForUpload(file)
       const form = new FormData()
-      form.append('photo', file)
+      form.append('photo', compressed)
       return api(`/orders/${id}/photos`, { method: 'POST', body: form })
     },
     onMutate: () => setPhotoError(''),

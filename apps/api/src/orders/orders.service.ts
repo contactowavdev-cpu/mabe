@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { Prisma, UserRole } from '@prisma/client'
 import { Buffer } from 'node:buffer'
 import { randomBytes } from 'node:crypto'
@@ -15,6 +15,8 @@ const toBigIntId = (id: string | number | bigint) => typeof id === 'bigint' ? id
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name)
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: StorageService,
@@ -195,19 +197,28 @@ export class OrdersService {
     if (count >= 10) throw new BadRequestException('Máximo 10 fotos por orden')
     if (!file.mimetype.startsWith('image/')) throw new BadRequestException('Archivo de imagen inválido')
 
-    const avif = await sharp(file.buffer).rotate().resize({ width: 1600, withoutEnlargement: true }).avif({ quality: 62 }).toBuffer()
-    const path = await this.storage.putObject(`orders/${id}/${randomBytes(12).toString('hex')}.avif`, avif)
+    try {
+      const avif = await sharp(file.buffer)
+        .rotate()
+        .resize({ width: 1600, withoutEnlargement: true })
+        .avif({ quality: 62 })
+        .toBuffer()
+      const path = await this.storage.putObject(`orders/${id}/${randomBytes(12).toString('hex')}.avif`, avif)
 
-    return this.prisma.orderPhoto.create({
-      data: {
-        orderId,
-        photoPath: path,
-        originalName: file.originalname,
-        mimeType: 'image/avif',
-        size: avif.byteLength,
-        sortOrder: count,
-      },
-    })
+      return this.prisma.orderPhoto.create({
+        data: {
+          orderId,
+          photoPath: path,
+          originalName: file.originalname,
+          mimeType: 'image/avif',
+          size: avif.byteLength,
+          sortOrder: count,
+        },
+      })
+    } catch (error) {
+      this.logger.error(`No se pudo procesar la foto de la orden ${id}`, error instanceof Error ? error.stack : String(error))
+      throw new BadRequestException('No se pudo procesar la foto. Usa JPG/PNG y evita imagenes muy pesadas.')
+    }
   }
 
   async deletePhoto(user: AuthUser, id: string, photoId: string) {

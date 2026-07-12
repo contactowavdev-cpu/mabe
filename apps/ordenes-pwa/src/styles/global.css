@@ -586,6 +586,32 @@ input:focus, textarea:focus {
   margin: 0;
   color: var(--muted);
 }
+.report-table {
+  display: grid;
+  gap: 8px;
+  overflow-x: auto;
+}
+.report-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.4fr) repeat(4, minmax(92px, 1fr));
+  gap: 10px;
+  align-items: center;
+  min-width: 660px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .9rem;
+}
+.report-row strong {
+  color: var(--ink);
+}
+.report-head {
+  color: var(--ink);
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
 .muted { color: var(--muted); }
 .breakable {
   overflow-wrap: anywhere;
