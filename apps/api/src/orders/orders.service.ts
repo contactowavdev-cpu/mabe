@@ -258,7 +258,6 @@ export class OrdersService {
     if (reviewOnlyRoles.includes(user.role)) {
       return {
         isCompleted: true,
-        clientSignaturePath: { not: null },
       }
     }
     return { technicianId: toBigIntId(user.sub) }
