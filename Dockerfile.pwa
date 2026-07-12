@@ -26,4 +26,4 @@ COPY --from=build /app/apps/ordenes-pwa/dist ./apps/ordenes-pwa/dist
 
 EXPOSE 4173
 
-CMD ["npm", "run", "start", "-w", "@mabe/ordenes-pwa"]
+CMD ["node", "apps/ordenes-pwa/server.mjs"]
