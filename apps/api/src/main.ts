@@ -25,7 +25,10 @@ async function bootstrap() {
   const isAllowedOrigin = (origin?: string) => {
     if (!origin) return true
     const normalized = origin.replace(/\/$/, '')
-    return allowedOrigins.has(normalized) || /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(normalized)
+    return allowedOrigins.has(normalized)
+      || /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/i.test(normalized)
+      || /^https?:\/\/localhost(:\d+)?$/i.test(normalized)
+      || /^https?:\/\/127\.0\.0\.1(:\d+)?$/i.test(normalized)
   }
 
   app.use((request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -33,9 +36,12 @@ async function bootstrap() {
     if (typeof origin === 'string' && isAllowedOrigin(origin)) {
       response.header('Access-Control-Allow-Origin', origin)
       response.header('Vary', 'Origin')
-      response.header('Access-Control-Allow-Credentials', 'true')
       response.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS')
-      response.header('Access-Control-Allow-Headers', request.headers['access-control-request-headers'] ?? 'Content-Type, Authorization')
+      response.header(
+        'Access-Control-Allow-Headers',
+        request.headers['access-control-request-headers'] ?? 'Content-Type, Authorization, Accept',
+      )
+      response.header('Access-Control-Max-Age', '86400')
     }
 
     if (request.method === 'OPTIONS') {
@@ -62,9 +68,9 @@ async function bootstrap() {
       }
       callback(null, false)
     },
-    credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    optionsSuccessStatus: 204,
   })
   app.setGlobalPrefix('api')
   app.use('/uploads', express.static(config.get('UPLOAD_DIR') ?? './uploads'))
