@@ -433,7 +433,7 @@ export function OrderDetailPage() {
         </button>
         {!isReviewOnly ? <label className="file-button">
           <Camera size={18} /> {uploadPhoto.isPending ? 'Subiendo...' : 'Tomar foto'}
-          <input type="file" accept="image/*" capture="environment" onChange={(event) => {
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/*" capture="environment" onChange={(event) => {
             const file = event.target.files?.[0]
             if (file) uploadPhoto.mutate(file)
             event.currentTarget.value = ''

@@ -236,12 +236,30 @@ export class OrdersService {
       }
     } catch (error) {
       this.logger.warn(`No se pudo convertir a AVIF ${file.originalname}: ${error instanceof Error ? error.message : String(error)}`)
-      return {
-        buffer: await image.clone().jpeg({ quality: 76, mozjpeg: true }).toBuffer(),
-        extension: 'jpg',
-        mimeType: 'image/jpeg',
+      try {
+        return {
+          buffer: await image.clone().jpeg({ quality: 76, mozjpeg: true }).toBuffer(),
+          extension: 'jpg',
+          mimeType: 'image/jpeg',
+        }
+      } catch (fallbackError) {
+        this.logger.warn(`No se pudo convertir a JPEG ${file.originalname}: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`)
+        return {
+          buffer: file.buffer,
+          extension: this.extensionFromMimeType(file.mimetype),
+          mimeType: file.mimetype,
+        }
       }
     }
+  }
+
+  private extensionFromMimeType(mimeType: string) {
+    if (mimeType.includes('png')) return 'png'
+    if (mimeType.includes('webp')) return 'webp'
+    if (mimeType.includes('heic')) return 'heic'
+    if (mimeType.includes('heif')) return 'heif'
+    if (mimeType.includes('gif')) return 'gif'
+    return 'jpg'
   }
 
   async deletePhoto(user: AuthUser, id: string, photoId: string) {
