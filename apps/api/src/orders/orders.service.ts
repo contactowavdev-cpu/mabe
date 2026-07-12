@@ -3,7 +3,6 @@ import { Prisma, UserRole } from '@prisma/client'
 import { Buffer } from 'node:buffer'
 import { randomBytes } from 'node:crypto'
 import PDFDocument = require('pdfkit')
-import sharp from 'sharp'
 import { AuthUser } from '../common/auth-user'
 import { PublicService } from '../public/public.service'
 import { PrismaService } from '../prisma/prisma.service'
@@ -205,60 +204,35 @@ export class OrdersService {
     if (count >= 10) throw new BadRequestException('Máximo 10 fotos por orden')
     if (!file.mimetype.startsWith('image/')) throw new BadRequestException('Archivo de imagen inválido')
 
-    try {
-      const processed = await this.processPhoto(file)
-      const path = await this.storage.putObject(`orders/${id}/${randomBytes(12).toString('hex')}.${processed.extension}`, processed.buffer)
+    const extension = this.extensionFromMimeType(file.mimetype, file.originalname)
 
+    try {
+      const path = await this.storage.putObject(`orders/${id}/${randomBytes(12).toString('hex')}.${extension}`, file.buffer)
       return this.prisma.orderPhoto.create({
         data: {
           orderId,
           photoPath: path,
           originalName: file.originalname,
-          mimeType: processed.mimeType,
-          size: processed.buffer.byteLength,
+          mimeType: file.mimetype,
+          size: file.size,
           sortOrder: count,
         },
       })
     } catch (error) {
-      this.logger.error(`No se pudo procesar la foto de la orden ${id}`, error instanceof Error ? error.stack : String(error))
-      throw new BadRequestException('No se pudo procesar la foto. Usa JPG/PNG y evita imagenes muy pesadas.')
+      this.logger.error(`No se pudo guardar la foto de la orden ${id}`, error instanceof Error ? error.stack : String(error))
+      throw new BadRequestException('No se pudo guardar la foto. Intenta con una imagen mas pequena o revisa el almacenamiento del servidor.')
     }
   }
 
-  private async processPhoto(file: Express.Multer.File) {
-    const image = sharp(file.buffer, { failOn: 'none' }).rotate().resize({ width: 1600, withoutEnlargement: true })
-
-    try {
-      return {
-        buffer: await image.clone().avif({ quality: 62 }).toBuffer(),
-        extension: 'avif',
-        mimeType: 'image/avif',
-      }
-    } catch (error) {
-      this.logger.warn(`No se pudo convertir a AVIF ${file.originalname}: ${error instanceof Error ? error.message : String(error)}`)
-      try {
-        return {
-          buffer: await image.clone().jpeg({ quality: 76, mozjpeg: true }).toBuffer(),
-          extension: 'jpg',
-          mimeType: 'image/jpeg',
-        }
-      } catch (fallbackError) {
-        this.logger.warn(`No se pudo convertir a JPEG ${file.originalname}: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`)
-        return {
-          buffer: file.buffer,
-          extension: this.extensionFromMimeType(file.mimetype),
-          mimeType: file.mimetype,
-        }
-      }
-    }
-  }
-
-  private extensionFromMimeType(mimeType: string) {
+  private extensionFromMimeType(mimeType: string, originalName?: string) {
     if (mimeType.includes('png')) return 'png'
     if (mimeType.includes('webp')) return 'webp'
     if (mimeType.includes('heic')) return 'heic'
     if (mimeType.includes('heif')) return 'heif'
     if (mimeType.includes('gif')) return 'gif'
+    if (mimeType.includes('jpeg')) return 'jpg'
+    const extension = originalName?.split('.').pop()?.toLowerCase()
+    if (extension && /^[a-z0-9]{2,5}$/.test(extension)) return extension
     return 'jpg'
   }
 
