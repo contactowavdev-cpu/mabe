@@ -4,6 +4,8 @@ WORKDIR /app
 
 ENV NODE_ENV=development
 
+RUN apt-get update -y && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
+
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 COPY apps/ordenes-pwa/package.json ./apps/ordenes-pwa/package.json
@@ -21,6 +23,8 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV UPLOAD_DIR=/app/uploads
+
+RUN apt-get update -y && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json ./
 COPY --from=build /app/node_modules ./node_modules

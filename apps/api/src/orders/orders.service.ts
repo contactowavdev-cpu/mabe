@@ -206,26 +206,41 @@ export class OrdersService {
     if (!file.mimetype.startsWith('image/')) throw new BadRequestException('Archivo de imagen inválido')
 
     try {
-      const avif = await sharp(file.buffer)
-        .rotate()
-        .resize({ width: 1600, withoutEnlargement: true })
-        .avif({ quality: 62 })
-        .toBuffer()
-      const path = await this.storage.putObject(`orders/${id}/${randomBytes(12).toString('hex')}.avif`, avif)
+      const processed = await this.processPhoto(file)
+      const path = await this.storage.putObject(`orders/${id}/${randomBytes(12).toString('hex')}.${processed.extension}`, processed.buffer)
 
       return this.prisma.orderPhoto.create({
         data: {
           orderId,
           photoPath: path,
           originalName: file.originalname,
-          mimeType: 'image/avif',
-          size: avif.byteLength,
+          mimeType: processed.mimeType,
+          size: processed.buffer.byteLength,
           sortOrder: count,
         },
       })
     } catch (error) {
       this.logger.error(`No se pudo procesar la foto de la orden ${id}`, error instanceof Error ? error.stack : String(error))
       throw new BadRequestException('No se pudo procesar la foto. Usa JPG/PNG y evita imagenes muy pesadas.')
+    }
+  }
+
+  private async processPhoto(file: Express.Multer.File) {
+    const image = sharp(file.buffer, { failOn: 'none' }).rotate().resize({ width: 1600, withoutEnlargement: true })
+
+    try {
+      return {
+        buffer: await image.clone().avif({ quality: 62 }).toBuffer(),
+        extension: 'avif',
+        mimeType: 'image/avif',
+      }
+    } catch (error) {
+      this.logger.warn(`No se pudo convertir a AVIF ${file.originalname}: ${error instanceof Error ? error.message : String(error)}`)
+      return {
+        buffer: await image.clone().jpeg({ quality: 76, mozjpeg: true }).toBuffer(),
+        extension: 'jpg',
+        mimeType: 'image/jpeg',
+      }
     }
   }
 
